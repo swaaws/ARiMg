@@ -1,6 +1,6 @@
 
 <p align="center">
-    <img src="https://upload.wikimedia.org/wikipedia/commons/7/77/Arm_logo_2017.svg" width="400">
+    <img src="logo.svg" width="400">
 </p>
 
 # Welcome to ARiMg
