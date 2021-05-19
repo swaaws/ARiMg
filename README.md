@@ -12,7 +12,7 @@ modify SD Card Images according to the [Acorn RISC Machine (ARM)](https://en.wik
 
 ## Download Structure
 
-In most cases the Operating System comes as a Download:
+In most cases the Operating System comes as a Compressed File with an Image(img) or as a Plain Root Directory(rootfs):
 
 - Plain Root Directory in ... (Your Flavour Compression Algorithm) i.e. ArchLinuxARM-rpi-2-latest.tar.gz
 - SD Card img packed in ... (Your Flavour Compression Algorithm) i.e. ubuntu-21.04-preinstalled-server-arm64+raspi.img.xz
@@ -56,14 +56,15 @@ _**SD Card Img**_
 ```
 
 _**Plain Root Directory**_
+.rootfs.(Flavour Compression)
 ```text
-.(Flavour Compression)
 / 
  | bin
  | dev
  | etc
  | mnt
 ```
+
 ## Supported Images
 
 Successfully Testet Images with there shasum
