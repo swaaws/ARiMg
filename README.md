@@ -8,14 +8,40 @@
 ## What's ARiMg?
 
 AR' iM' g'  is a helper that includes everything* needed to
-modify SD Card Images according to the [Acorn RISC Machine (ARM)](https://en.wikipedia.org/wiki/ARM_architecture) Platform. *bsdtar, Golang and GNU not included
+modify SD Card Images according to the [Acorn RISC Machine (ARM)](https://en.wikipedia.org/wiki/ARM_architecture) Platform.
+*bsdtar, Golang and GNU not included
+
+
+## Preamble
+In most cases you need to setup a arm (raspberry like) host.
+You get an img from the Website and flashing it with _**dd**_ to the sd card
+you plug network, keyboard, mouse, display and power. All fine?
+Then you don't need this tool.
+But what is if you don't have a keyboard, mouse and display because of idleness?
+-> This tool is your _**MASTER Branche**_  
+
+You get an Provisioning user called: _**ansible**_  with the password _**ansible**_
+and if the Host is booted up it pronounces over Multicast with his ip addr output.
+Your login looks like ssh ansible@[ip from nc -u -l 9999 or ./v4UdpMcastSrv]  
+
+
+## What's open
+* GPT support
+* Zuverlassige ergennung der eingabe rootfs<->MBR/GPT
+* automatische provisionirung der erkannten hosts durch ansible
+* Passwort login per default aus
+* Ipv6 multicast announcing
+
 
 ## Download Structure
 
-In most cases the Operating System comes as a Compressed File with an Image(img) or as a Plain Root Directory(rootfs):
+In most cases the Operating System comes as a Compressed File with an Image(img)
+or as a Plain Root Directory(rootfs):
 
-- Plain Root Directory in ... (Your Flavour Compression Algorithm) i.e. ArchLinuxARM-rpi-2-latest.tar.gz
-- SD Card img packed in ... (Your Flavour Compression Algorithm) i.e. ubuntu-21.04-preinstalled-server-arm64+raspi.img.xz
+- Plain Root Directory in ... (Your Flavour Compression Algorithm)
+  i.e. ArchLinuxARM-rpi-2-latest.tar.gz
+- SD Card img packed in ... (Your Flavour Compression Algorithm)
+  i.e. ubuntu-21.04-preinstalled-server-arm64+raspi.img.xz
 - ...
 
 ## Image Structur
@@ -24,32 +50,27 @@ _**SD Card Img**_
 ```text
  SD Card img (.img, .raw, ...)
 |------------------------------------------------------------------------------|
-|   Patition table msdos                                                       |
+|   Patition table msdos                                               3900MB  |
 |  |-------------------------------------------------------------------------| |
-|  |   Boot Partition fat32                                                  | |
+|  |   Boot Partition fat32                                          257MiB  | |
 |  |  |--------------------------------------------------------------------| | |
-|  |  | /                                                               |  | | |
-|  |  | | kernel                                                        |  | | |
-|  |  | | initramfs                                              257MiB |  | | |
-|  |  | | ...                                                           |  | | |
-|  |  |                                                                 |  | | |
+|  |  | /                                                                  | | |
+|  |  | | kernel                                                           | | |
+|  |  | | initramfs                                                        | | |
+|  |  | | ...                                                              | | |
+|  |  |                                                                    | | |
 |  |  |--------------------------------------------------------------------| | |
 |  |                                                                         | |
-|  |   Root Partition ext4                                                   | |
+|  |   Root Partition ext4                                             100%  | |
 |  |  |--------------------------------------------------------------------| | |
-|  |  | /                                                               |  | | |
-|  |  | | bin                                                           |  | | |
-|  |  | | etc                                                           |  | | |
-|  |  | |    /                                                          |  | | |
-|  |  | |     | fstab [mount ext4 to /] [mount fat32 to /boot]          |  | | |
-|  |  | | ...                                                           |  | | |
-|  |  |                                                                 |  | | |
-|  |  |                                                            100% |  | | |
-|  |  |                                                                 |  | | |
-|  |  |                                                                 |  | | |
-|  |  |                                                                 |  | | |
-|  |  |                                                                 |  | | |
-|  |  |                                                                 |  | | |
+|  |  | /                                                                  | | |
+|  |  | | bin                                                              | | |
+|  |  | | etc                                                              | | |
+|  |  | |    /                                                             | | |
+|  |  | |     | fstab [mount ext4 to /] [mount fat32 to /boot]             | | |
+|  |  | | ...                                                              | | |
+|  |  |                                                                    | | |
+|  |  |                                                                    | | |
 |  |  |--------------------------------------------------------------------| | |
 |  |-------------------------------------------------------------------------| |
 |------------------------------------------------------------------------------|
@@ -58,7 +79,7 @@ _**SD Card Img**_
 _**Plain Root Directory**_
 .rootfs.(Flavour Compression)
 ```text
-/ 
+/
  | bin
  | dev
  | etc
@@ -67,7 +88,6 @@ _**Plain Root Directory**_
 
 ## Supported Images
 
-Successfully Testet Images with there shasum
 
 _**ubuntu  arm64 raspi**_
 - `b3a80ce2979a0841c06831475993cfff80e5614c` 21.04 preinstalled-server
@@ -84,6 +104,38 @@ _**ArchLinuxARM**_
 - `4f0fe7bc9944ca244c3f719da46386200d94a253` rpi-2 (RPI 3) latest
 
 
+
 ## Getting Started
 
-Needs to run on the same ARCH as the input Image: Raspberry 3.img > Raspberry 3 Host
+_**1. Download the Repo**_
+```bash
+git clone https://github.com/swaaws/ARiMg.git
+```
+
+_**2. Download a Operating System**_
+```bash
+#Notice: Needs the Same Architecture as your Host
+#Workflow:  Run This Repo on an Raspberry and scp the Final img (or dd the img to a second sd card)
+wget https://cdimage.ubuntu.com/releases/21.04/release/ubuntu-21.04-preinstalled-server-arm64+raspi.img.xz
+```
+
+_**3. Create the modifyed img**_
+```bash
+# Username: ansible
+# Password: ansible
+./feasibility.bash ubuntu-21.04-preinstalled-server-arm64+raspi.img.xz
+
+#If you Deploy more than one at the same Time: (Infinite Multicast Server)
+./cluster_deploy.bash
+
+```
+
+_**4. Wichtig**_
+```text
+Throught Ansible:
+* Disable Passwordauth
+* Disable Root Login
+* Change Password
+
+
+```
