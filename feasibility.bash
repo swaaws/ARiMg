@@ -133,7 +133,7 @@ if [[ $1 == *.tar.gz ]]; then
     echo Create Root Patition
     sudo parted ~/ansible.img mkpart primary ext4 257MiB 100%
 
-    echo Attach Ansible.img to loop Device
+    echo Attach ansible.img to loop Device
     loop=`sudo losetup --find --partscan --show ansible.img`
 
     echo Create vfat on Boot Patition
