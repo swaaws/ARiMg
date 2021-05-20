@@ -19,21 +19,6 @@ if [ -f ~/ansible.img ]; then
     sudo rm -rf ~/ansible.img
 fi
 
-
-#echo Check Multicast server present
-#if [ -f "v4UdpMcastSrv" ]; then
-#    echo Multicast Server Found;
-#else
-#    wget -4 https://raw.githubusercontent.com/swaaws/help/main/v4UdpMcastSrv.go
-#    if [ `go version | grep -c "."` ]; then
-#        echo go found
-#        go build v4UdpMcastSrv.go
-#    else
-#        echo Please install golang
-#        exit
-#    fi
-#fi
-
 echo Check RSA Publickey
 if [ -f ".ssh/id_rsa.pub" ]; then
     echo RSA Found;
@@ -287,4 +272,5 @@ echo -e "\e[32mFinished, pending-setup.img created\e[0m"
 
 mv ansible.img pending-setup.img
 
+echo if you deploy multiple hosts run: ./cluster_deploy.bash
 echo Run Mcast Server: nc -u -l 9999
