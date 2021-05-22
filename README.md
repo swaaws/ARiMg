@@ -18,7 +18,7 @@ You get an img from the Website and flashing it with _**dd**_ to the sd card
 you plug network, keyboard, mouse, display and power. All fine?
 Then you don't need this tool.
 But what is if you don't have a keyboard, mouse and display because of idleness?
--> This tool is your _**MASTER Branche**_  
+-> This tool is your _**MASTER Branch**_  
 
 You get an Provisioning user called: _**ansible**_  with the password _**ansible**_
 and if the Host is booted up it pronounces over Multicast with his ip addr output.
