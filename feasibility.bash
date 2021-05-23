@@ -15,7 +15,7 @@ if [ -d ~/mnt ]; then
 fi
 
 if [ -f ~/ansible.img ]; then
-    §   echo Old mnt Removed
+    echo Old ansible.img Removed
     sudo rm -rf ~/ansible.img
 fi
 
@@ -106,7 +106,7 @@ if [[ $1 == *.tar.gz ]]; then
     echo Create Mountpoint
     mkdir ~/mnt
 
-    echo Create Ansible.img
+    echo Create ansible.img
     sudo dd of=~/ansible.img seek=3900M bs=1 count=0
 
     echo Create Patition Table
@@ -179,7 +179,7 @@ cat <<'EOF' >> ~/notifyer.service
 Description=Multicast notifyer
 
 [Service]
-ExecStart=/notifyer
+ExecStart=/v6UdpMcastClt
 
 [Install]
 WantedBy=multi-user.target
@@ -190,6 +190,184 @@ sudo cp -f ~/notifyer.service ~/mnt/etc/systemd/system/notifyer.service
 
 echo Remove notifyer.service
 rm  ~/notifyer.service
+
+
+cat ./v6UdpMcastClt.c << "EOT"
+#include <sys/types.h>
+#include <sys/socket.h>
+#include <netinet/in.h>
+#include <string.h>
+#include <arpa/inet.h>
+#include <unistd.h>
+#include <stdlib.h>
+#include <sys/stat.h>
+#include <fcntl.h>
+#include <stdio.h>
+
+int
+main(int argc, char *argv[])
+{
+	struct sockaddr_in6 saddr;
+	struct ipv6_mreq mreq;
+	char buf[1400];
+	ssize_t len = 1;
+	int sd, fd, on = 1, hops = 255, ifidx = 0;
+
+	if (argc < 3) {
+		printf("\nUsage: %s <address> <port>\n\nExample: %s ff02::5:6 12345\n\n", argv[0], argv[0]);
+		return 1;
+	}
+
+	sd = socket(AF_INET6, SOCK_DGRAM, IPPROTO_UDP);
+	if (sd < 0) {
+		return 1;
+	}
+
+	if (setsockopt(sd, SOL_SOCKET, SO_REUSEADDR, &on, sizeof(on))) {
+		return 1;
+	}
+
+	if (setsockopt(sd, IPPROTO_IPV6, IPV6_MULTICAST_IF, &ifidx, sizeof(ifidx))) {
+		return 1;
+	}
+
+	if (setsockopt(sd, IPPROTO_IPV6, IPV6_MULTICAST_HOPS, &hops, sizeof(hops))) {
+		return 1;
+	}
+
+	if (setsockopt(sd, IPPROTO_IPV6, IPV6_MULTICAST_LOOP, &on, sizeof(on))) {
+		return 1;
+	}
+
+	memset(&saddr, 0, sizeof(struct sockaddr_in6));
+	saddr.sin6_family = AF_INET6;
+	saddr.sin6_port = htons(atoi(argv[2]));
+	inet_pton(AF_INET6, argv[1], &saddr.sin6_addr);
+
+	memcpy(&mreq.ipv6mr_multiaddr, &saddr.sin6_addr, sizeof(mreq.ipv6mr_multiaddr));
+	mreq.ipv6mr_interface = ifidx;
+
+	if (setsockopt(sd, IPPROTO_IPV6, IPV6_JOIN_GROUP, (char *) &mreq, sizeof(mreq))) {
+		return 1;
+	}
+
+	fd = open("/dev/stdin", O_RDONLY, NULL);
+	if (fd < 0) {
+		return 1;
+	}
+
+	while (len) {
+		len = read(fd, buf, 1400);
+		if (!len) {
+			break;
+		} else if (len < 0) {
+			return 1;
+		} else {
+			len = sendto(sd, buf, len, 0, (const struct sockaddr *) &saddr, sizeof(saddr));
+
+			usleep(10000);
+		}
+	}
+	close(sd);
+	close(fd);
+	return 0;
+}
+EOT
+cat ./v6UdpMcastSrv.c << "EOT"
+#include <sys/types.h>
+#include <sys/socket.h>
+#include <arpa/inet.h>
+#include <netinet/in.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <unistd.h>
+#include <sys/stat.h>
+#include <fcntl.h>
+
+int main(int argc, char *argv[])
+{
+        struct sockaddr_in6 saddr, maddr;
+        struct ipv6_mreq mreq;
+        char buf[1400];
+        ssize_t len;
+        int sd, fd, on = 1, flag = 0, hops = 255, ifidx = 0;
+        fd_set fds;
+
+        if (argc < 3) {
+                printf("\nUsage: %s <address> <port>\n\nExample: %s ff02::9999 9999\n\n", argv[0], argv[0]);
+                return 1;
+        }
+
+        sd = socket(AF_INET6, SOCK_DGRAM, IPPROTO_UDP);
+        if (sd < 0) {
+                return 1;
+        }
+
+        if (setsockopt(sd, SOL_SOCKET, SO_REUSEADDR, &on, sizeof(on))) {
+                return 1;
+        }
+
+        if (setsockopt(sd, IPPROTO_IPV6, IPV6_MULTICAST_IF, &ifidx, sizeof(ifidx))) {
+                return 1;
+        }
+
+        if (setsockopt(sd, IPPROTO_IPV6, IPV6_MULTICAST_HOPS, &hops, sizeof(hops))) {
+                return 1;
+        }
+
+        if (setsockopt(sd, IPPROTO_IPV6, IPV6_MULTICAST_LOOP, &on, sizeof(on))) {
+                return 1;
+        }
+
+        memset(&saddr, 0, sizeof(saddr));
+        saddr.sin6_family = AF_INET6;
+        saddr.sin6_port = htons(atoi(argv[2]));
+        saddr.sin6_addr = in6addr_any;
+
+        if (bind(sd, (struct sockaddr *) &saddr, sizeof(saddr))) {
+                return 1;
+        }
+
+        memset(&maddr, 0, sizeof(maddr));
+        inet_pton(AF_INET6, argv[1], &maddr.sin6_addr);
+
+        memcpy(&mreq.ipv6mr_multiaddr, &maddr.sin6_addr, sizeof(mreq.ipv6mr_multiaddr));
+        mreq.ipv6mr_interface = ifidx;
+
+        if (setsockopt(sd, IPPROTO_IPV6, IPV6_JOIN_GROUP, (char *) &mreq, sizeof(mreq))) {
+                return 1;
+        }
+        FD_ZERO(&fds);
+        FD_SET(sd, &fds);
+        fd = open("/dev/stdout", O_WRONLY, NULL);
+        if (fd < 0) {
+                return 1;
+        }
+
+        while (1) {
+                len = read(sd, buf, 1400);
+                buf[len] = '\0';
+
+                if (!len) {
+                        break;
+                } else if (len < 0) {
+                        return 1;
+                } else {
+                        len = write(fd, buf, len);
+                        flag++;
+                }
+        }
+        close(sd);
+        close(fd);
+        return 0;
+}
+EOT
+echo Build Mcast Server
+gcc -Wall -g ~/v6UdpMcastSrv.c -o ~/v6UdpMcastSrv
+echo Build Mcast Client
+gcc -Wall -g ~/v6UdpMcastClt.c -o ~/v6UdpMcastClt
+cp ./v6UdpMcastClt ~/mnt/v6UdpMcastClt
 
 
 if [[ $1 == *.xz ]]; then
@@ -206,9 +384,7 @@ chmod 600 /home/ansible/.ssh/authorized_keys
 chown -R ansible:ansible /home/ansible/
 rm /id_rsa.pub
 echo "pending-setup" > /etc/hostname
-echo "#!/bin/bash" > /notifyer
-echo "while true; do     sleep 60;     echo \`ip addr\` > /dev/udp/224.0.0.1/9999  ; done" >> /notifyer
-chmod +x /notifyer
+chmod +x /v6UdpMcastClt
 systemctl enable notifyer.service
 EOT
 fi
@@ -226,10 +402,7 @@ chmod 700 /home/ansible/.ssh
 chmod 600 /home/ansible/.ssh/authorized_keys
 chown -R ansible:ansible /home/ansible/
 rm /id_rsa.pub
-echo "pending-setup" > /etc/hostname
-echo "#!/bin/bash" > /notifyer
-echo "while true; do     sleep 60;     echo \`ip addr\` > /dev/udp/224.0.0.1/9999  ; done" >> /notifyer
-chmod +x /notifyer
+chmod +x /v6UdpMcastClt
 systemctl enable notifyer.service
 EOT
 fi
@@ -242,15 +415,14 @@ if [[ $1 == *.tar.gz ]]; then
     sudo chroot ~/mnt/ /bin/bash << "EOT"
 useradd -m -s $(which bash) -p sa/o2qVjeFay2 ansible
 mkdir -p /home/ansible/.ssh
+
 cat /id_rsa.pub > /home/ansible/.ssh/authorized_keys
 chmod 700 /home/ansible/.ssh
 chmod 600 /home/ansible/.ssh/authorized_keys
 chown -R ansible:ansible /home/ansible/
 rm /id_rsa.pub
 echo "pending-setup" > /etc/hostname
-echo "#!/bin/bash" > /notifyer
-echo "while true; do     sleep 60;     echo \`ip addr\` > /dev/udp/224.0.0.1/9999  ; done" >> /notifyer
-chmod +x /notifyer
+chmod +x /v6UdpMcastClt
 systemctl enable notifyer.service
 EOT
     echo Detach loop
@@ -272,5 +444,4 @@ echo -e "\e[32mFinished, pending-setup.img created\e[0m"
 
 mv ansible.img pending-setup.img
 
-echo if you deploy multiple hosts run: ./cluster_deploy.bash
-echo Run Mcast Server: nc -u -l 9999
+echo Run Mcast Server: ./v6UdpMcastSrv
