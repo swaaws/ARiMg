@@ -13,7 +13,7 @@ modify SD Card Images according to the [Acorn RISC Machine (ARM)](https://en.wik
 
 
 ## Preamble
-In most cases you need to setup a arm (raspberry like) host.
+In cases you need to setup a arm (raspberry like) host.
 You get an img from the Website and flashing it with _**dd**_ to the sd card
 you plug network, keyboard, mouse, display and power. All fine?
 Then you don't need this tool.
