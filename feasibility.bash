@@ -372,7 +372,7 @@ gcc -Wall -g ~/v6UdpMcastSrv.c -o ~/v6UdpMcastSrv
 echo Build Mcast Client
 gcc -Wall -g ~/v6UdpMcastClt.c -o ~/v6UdpMcastClt
 echo copy mcast Client
-cp ~/v6UdpMcastClt ~/mnt/v6UdpMcastClt
+sudo cp ~/v6UdpMcastClt ~/mnt/v6UdpMcastClt
 
 if [[ $1 == *.xz ]]; then
 
@@ -452,7 +452,8 @@ sudo umount ~/mnt
 echo Remove Mountpoint
 sudo rm -rf ~/mnt
 
-
+echo remove notifier
+sudo rm notifyer
 
 echo -e "\e[32mFinished, pending-setup.img created\e[0m"
 
