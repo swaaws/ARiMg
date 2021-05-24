@@ -452,9 +452,6 @@ sudo umount ~/mnt
 echo Remove Mountpoint
 sudo rm -rf ~/mnt
 
-echo remove notifier
-sudo rm notifyer
-
 echo -e "\e[32mFinished, pending-setup.img created\e[0m"
 
 mv ansible.img pending-setup.img
