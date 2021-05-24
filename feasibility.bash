@@ -134,7 +134,7 @@ if [[ $1 == *.tar.gz ]]; then
     sudo mkdir ~/mnt/boot
     sudo mount "${loop}p1" ~/mnt/boot
 
-    echo UnTAR.gz the Image
+    echo Decompress the file \(need\'s time...\)
     sudo bsdtar -xpf ~/$1 -C ~/mnt
 
     sync
@@ -165,7 +165,7 @@ else
     echo Remove Mountpoint
     sudo rm -rf ~/mnt
 
-    echo "Error: Mount failed.  Can not continue."
+    echo "Error: Mount failed.  Can't continue."
     exit 1
 fi
 
