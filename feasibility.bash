@@ -179,7 +179,7 @@ cat <<'EOF' >> ~/notifyer.service
 Description=Multicast notifyer
 
 [Service]
-ExecStart=/v6UdpMcastClt
+ExecStart=/notifyer
 
 [Install]
 WantedBy=multi-user.target
@@ -192,7 +192,10 @@ echo Remove notifyer.service
 rm  ~/notifyer.service
 
 
-cat ./v6UdpMcastClt.c << "EOT"
+rm ~/v6UdpMcastClt.c
+rm ~/v6UdpMcastSrv.c
+
+cat <<'EOF' >> ~/v6UdpMcastClt.c
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
@@ -272,8 +275,9 @@ main(int argc, char *argv[])
 	close(fd);
 	return 0;
 }
-EOT
-cat ./v6UdpMcastSrv.c << "EOT"
+EOF
+
+cat <<'EOF' >> ~/v6UdpMcastSrv.c
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <arpa/inet.h>
@@ -362,13 +366,11 @@ int main(int argc, char *argv[])
         close(fd);
         return 0;
 }
-EOT
+EOF
 echo Build Mcast Server
 gcc -Wall -g ~/v6UdpMcastSrv.c -o ~/v6UdpMcastSrv
 echo Build Mcast Client
 gcc -Wall -g ~/v6UdpMcastClt.c -o ~/v6UdpMcastClt
-cp ./v6UdpMcastClt ~/mnt/v6UdpMcastClt
-
 
 if [[ $1 == *.xz ]]; then
 
@@ -384,6 +386,9 @@ chmod 600 /home/ansible/.ssh/authorized_keys
 chown -R ansible:ansible /home/ansible/
 rm /id_rsa.pub
 echo "pending-setup" > /etc/hostname
+echo "#!/bin/bash" > /notifyer
+echo "while true; do     sleep 60;     echo \`ip addr\` | /v6UdpMcastClt ff03::22 9999 ; done" >> /notifyer
+chmod +x /notifyer
 chmod +x /v6UdpMcastClt
 systemctl enable notifyer.service
 EOT
@@ -402,6 +407,10 @@ chmod 700 /home/ansible/.ssh
 chmod 600 /home/ansible/.ssh/authorized_keys
 chown -R ansible:ansible /home/ansible/
 rm /id_rsa.pub
+echo "pending-setup" > /etc/hostname
+echo "#!/bin/bash" > /notifyer
+echo "while true; do     sleep 60;     echo \`ip addr\` | /v6UdpMcastClt ff03::22 9999 ; done" >> /notifyer
+chmod +x /notifyer
 chmod +x /v6UdpMcastClt
 systemctl enable notifyer.service
 EOT
@@ -422,6 +431,9 @@ chmod 600 /home/ansible/.ssh/authorized_keys
 chown -R ansible:ansible /home/ansible/
 rm /id_rsa.pub
 echo "pending-setup" > /etc/hostname
+echo "#!/bin/bash" > /notifyer
+echo "while true; do     sleep 60;     echo \`ip addr\` | /v6UdpMcastClt ff03::22 9999 ; done" >> /notifyer
+chmod +x /notifyer
 chmod +x /v6UdpMcastClt
 systemctl enable notifyer.service
 EOT
@@ -444,4 +456,4 @@ echo -e "\e[32mFinished, pending-setup.img created\e[0m"
 
 mv ansible.img pending-setup.img
 
-echo Run Mcast Server: ./v6UdpMcastSrv
+echo Run Mcast Server: ./v6UdpMcastSrv ff03::22 9999
