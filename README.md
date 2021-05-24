@@ -21,16 +21,18 @@ But what is if you don't have a keyboard, mouse and display because of idleness?
 -> This tool is your _**MASTER Branch**_  
 
 You get an Provisioning user called: _**ansible**_  with the password _**ansible**_
-and if the Host is booted up it pronounces over Multicast with his ip addr output.
+and if the Host is booted up it announce over Multicast with his ip addr output.
 Your login looks like ssh ansible@[ip from nc -u -l 9999 or ./v4UdpMcastSrv]  
 
 
 ## What's open
-* GPT support
-* Zuverlassige ergennung der eingabe rootfs<->MBR/GPT
-* automatische provisionirung der erkannten hosts durch ansible
-* Passwort login per default aus
 * Ipv6 multicast announcing
+* save recognition of the pattern rootfs<->MBR/GPT 
+* permit password login
+* automatische provisionirung der erkannten hosts durch ansible
+* GPT support
+
+
 
 
 ## Download Structure
@@ -130,7 +132,7 @@ _**3. Create the modifyed img**_
 
 ```
 
-_**4. Wichtig**_
+_**4. Additional Ansible steps**_
 ```text
 Throught Ansible:
 * Disable Passwordauth
