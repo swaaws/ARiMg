@@ -9,7 +9,7 @@
 
 AR' iM' g'  is a helper that includes everything* needed to
 modify SD Card Images according to the [Acorn RISC Machine (ARM)](https://en.wikipedia.org/wiki/ARM_architecture) Platform.
-*bsdtar, Golang and GNU not included
+*dependencys not included
 
 
 ## Preamble
