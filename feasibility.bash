@@ -371,6 +371,8 @@ echo Build Mcast Server
 gcc -Wall -g ~/v6UdpMcastSrv.c -o ~/v6UdpMcastSrv
 echo Build Mcast Client
 gcc -Wall -g ~/v6UdpMcastClt.c -o ~/v6UdpMcastClt
+echo copy mcast Client
+cp ~/v6UdpMcastClt ~/mnt/v6UdpMcastClt
 
 if [[ $1 == *.xz ]]; then
 
