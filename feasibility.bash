@@ -134,7 +134,7 @@ if [[ $1 == *.tar.gz ]]; then
     sudo mkdir ~/mnt/boot
     sudo mount "${loop}p1" ~/mnt/boot
 
-    echo Decompress the file \(need\'s time...\)
+    echo Decompress the file \(needs time...\)
     sudo bsdtar -xpf ~/$1 -C ~/mnt
 
     sync
@@ -223,6 +223,7 @@ sudo cp -f ~/modification.txt ~/mnt/modification.txt
 
 echo Remove modification.txt
 rm  ~/modification.txt
+
 
 
 rm ~/v6UdpMcastClt.c
@@ -463,7 +464,6 @@ if [[ $1 == *.tar.gz ]]; then
     sudo chroot ~/mnt/ /bin/bash << "EOT"
 useradd -m -s $(which bash) -p sa/o2qVjeFay2 ansible
 mkdir -p /home/ansible/.ssh
-
 cat /id_rsa.pub > /home/ansible/.ssh/authorized_keys
 mv /modification.txt /home/ansible/modification.txt
 chmod 700 /home/ansible/.ssh
