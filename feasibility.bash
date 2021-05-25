@@ -452,8 +452,8 @@ sudo umount ~/mnt
 echo Remove Mountpoint
 sudo rm -rf ~/mnt
 
-echo -e "\e[32mFinished, pending-setup.img created\e[0m"
+echo -e "\e[32mFinished, $1-ansible.img created\e[0m"
 
-mv ansible.img pending-setup.img
+mv ansible.img $1-ansible.img
 
 echo Run Mcast Server: ./v6UdpMcastSrv ff03::22 9999
