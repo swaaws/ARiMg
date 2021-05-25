@@ -196,7 +196,7 @@ rm  ~/notifyer.service
 echo Create netconfig
 cat <<'EOF' >> ~/netconfig
 interface=`ip -o -6 route show to default | awk '{print $5}'`
-echo gateway: `ip -o -6 route show to default | awk '{print $3}'` global6: `ip addr show $interface | grep global | grep inet6 | awk '{print $2}'` link-local: `ip addr show $interface | grep link | grep inet6 | awk '{print $2}'` mac_addr: `ip addr show $interface | grep ether  | awk '{print $2}'` status: `systemctl status | grep "  State: " | awk '{print $2}'` failed: `systemctl status | grep "  Failed: " | awk '{print $2}'` units
+echo hostname: `hostname` gateway: `ip -o -6 route show to default | awk '{print $3}'` global6: `ip addr show $interface | grep global | grep inet6 | awk '{print $2}'` link-local: `ip addr show $interface | grep link | grep inet6 | awk '{print $2}'` mac_addr: `ip addr show $interface | grep ether  | awk '{print $2}'` status: `systemctl status | grep "  State: " | awk '{print $2}'` failed: `systemctl status | grep "  Failed: " | awk '{print $2}'` units
 EOF
 
 echo Copy netconfig to Root fs
