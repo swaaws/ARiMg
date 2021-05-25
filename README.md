@@ -27,7 +27,7 @@ Your login looks like ssh ansible@[ip from nc -u -l 9999 or ./v4UdpMcastSrv]
 
 ## What's open
 * Ipv6 multicast announcing
-* save recognition of the pattern rootfs<->MBR/GPT 
+* save recognition of the pattern rootfs<->MBR/GPT
 * permit password login
 * automatische provisionirung der erkannten hosts durch ansible
 * GPT support
@@ -126,10 +126,6 @@ _**3. Create the modifyed img**_
 # Username: ansible
 # Password: ansible
 ./feasibility.bash ubuntu-21.04-preinstalled-server-arm64+raspi.img.xz
-
-#If you Deploy more than one at the same Time: (Infinite Multicast Server)
-./cluster_deploy.bash
-
 ```
 
 _**4. Additional Ansible steps**_
