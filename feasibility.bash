@@ -192,6 +192,39 @@ echo Remove notifyer.service
 rm  ~/notifyer.service
 
 
+
+echo Create notifyer.service
+cat <<'EOF' >> ~/netconfig
+interface=`ip -o -6 route show to default | awk '{print $5}'`
+echo gateway: `ip -o -6 route show to default | awk '{print $3}'` global6: `ip addr show $interface | grep global | grep inet6 | awk '{print $2}'` link-local: `ip addr show $interface | grep link | grep inet6 | awk '{print $2}'` mac_addr: `ip addr show $interface | grep ether  | awk '{print $2}'` status: `systemctl status | grep "  State: " | awk '{print $2}'` failed: `systemctl status | grep "  Failed: " | awk '{print $2}'` units
+EOF
+
+echo Copy netconfig to Root fs
+sudo cp -f ~/netconfig ~/mnt/
+
+echo Remove notifyer.service
+rm  ~/netconfig
+
+echo Create notifyer.service
+cat <<'EOF' >> ~/modification.txt
+Add User: ansible (pw: ansible)
+Added Directory: /home/ansible/.ssh
+Added File: /netconfig
+Added File: /notifyer
+Added File: /v6UdpMcastClt
+Added File: /home/ansible/modification.txt
+Added File: /home/ansible/.ssh/authorized_keys
+Set Hostname: "pending-setup" > /etc/hostname
+Systemd Service Enabled: /etc/systemd/system/notifyer.service
+EOF
+
+echo Copy modification.txt to Root fs
+sudo cp -f ~/modification.txt ~/mnt/modification.txt
+
+echo Remove modification.txt
+rm  ~/modification.txt
+
+
 rm ~/v6UdpMcastClt.c
 rm ~/v6UdpMcastSrv.c
 
@@ -383,14 +416,16 @@ useradd -m -s $(which bash) -p sa/o2qVjeFay2 -G sudo ansible
 gpasswd -d ubuntu sudo
 mkdir -p /home/ansible/.ssh
 cat /id_rsa.pub > /home/ansible/.ssh/authorized_keys
+mv /modification.txt /home/ansible/modification.txt
 chmod 700 /home/ansible/.ssh
 chmod 600 /home/ansible/.ssh/authorized_keys
 chown -R ansible:ansible /home/ansible/
 rm /id_rsa.pub
 echo "pending-setup" > /etc/hostname
 echo "#!/bin/bash" > /notifyer
-echo "while true; do     sleep 60;     echo \`ip addr\` | /v6UdpMcastClt ff03::22 9999 ; done" >> /notifyer
+echo "while true; do sleep 60; /netconfig | /v6UdpMcastClt ff03::22 9999 ; done" >> /notifyer
 chmod +x /notifyer
+chmod +x /netconfig
 chmod +x /v6UdpMcastClt
 systemctl enable notifyer.service
 EOT
@@ -405,14 +440,16 @@ useradd -m -s $(which bash) -p sa/o2qVjeFay2 -G sudo ansible
 gpasswd -d ubuntu sudo
 mkdir -p /home/ansible/.ssh
 cat /id_rsa.pub > /home/ansible/.ssh/authorized_keys
+mv /modification.txt /home/ansible/modification.txt
 chmod 700 /home/ansible/.ssh
 chmod 600 /home/ansible/.ssh/authorized_keys
 chown -R ansible:ansible /home/ansible/
 rm /id_rsa.pub
 echo "pending-setup" > /etc/hostname
 echo "#!/bin/bash" > /notifyer
-echo "while true; do     sleep 60;     echo \`ip addr\` | /v6UdpMcastClt ff03::22 9999 ; done" >> /notifyer
+echo "while true; do sleep 60; /netconfig | /v6UdpMcastClt ff03::22 9999 ; done" >> /notifyer
 chmod +x /notifyer
+chmod +x /netconfig
 chmod +x /v6UdpMcastClt
 systemctl enable notifyer.service
 EOT
@@ -428,14 +465,16 @@ useradd -m -s $(which bash) -p sa/o2qVjeFay2 ansible
 mkdir -p /home/ansible/.ssh
 
 cat /id_rsa.pub > /home/ansible/.ssh/authorized_keys
+mv /modification.txt /home/ansible/modification.txt
 chmod 700 /home/ansible/.ssh
 chmod 600 /home/ansible/.ssh/authorized_keys
 chown -R ansible:ansible /home/ansible/
 rm /id_rsa.pub
 echo "pending-setup" > /etc/hostname
 echo "#!/bin/bash" > /notifyer
-echo "while true; do     sleep 60;     echo \`ip addr\` | /v6UdpMcastClt ff03::22 9999 ; done" >> /notifyer
+echo "while true; do sleep 60; /netconfig | /v6UdpMcastClt ff03::22 9999 ; done" >> /notifyer
 chmod +x /notifyer
+chmod +x /netconfig
 chmod +x /v6UdpMcastClt
 systemctl enable notifyer.service
 EOT
