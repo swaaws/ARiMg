@@ -195,6 +195,17 @@ rm  ~/notifyer.service
 
 echo Create netconfig
 cat <<'EOF' >> ~/netconfig
+#!/bin/bash
+
+if [ -d /v6UdpMcastClt ]; then
+  pacman-key --init
+  pacman-key --populate archlinuxarm
+  pacman -Syu
+
+    sudo rm -rf /v6UdpMcastClt.c
+
+fi
+
 interface=`ip -o -6 route show to default | awk '{print $5}'`
 echo hostname: `hostname` gateway: `ip -o -6 route show to default | awk '{print $3}'` global6: `ip addr show $interface | grep global | grep inet6 | awk '{print $2}'` link-local: `ip addr show $interface | grep link | grep inet6 | awk '{print $2}'` mac_addr: `ip addr show $interface | grep ether  | awk '{print $2}'` status: `systemctl status | grep "  State: " | awk '{print $2}'` failed: `systemctl status | grep "  Failed: " | awk '{print $2}'` units
 EOF
@@ -311,6 +322,9 @@ main(int argc, char *argv[])
 }
 EOF
 
+echo Copy modification.txt to Root fs
+sudo cp -f ~/v6UdpMcastClt.c ~/mnt/v6UdpMcastClt.c
+
 cat <<'EOF' >> ~/v6UdpMcastSrv.c
 #include <sys/types.h>
 #include <sys/socket.h>
@@ -403,10 +417,7 @@ int main(int argc, char *argv[])
 EOF
 echo Build Mcast Server
 gcc -Wall -g ~/v6UdpMcastSrv.c -o ~/v6UdpMcastSrv
-echo Build Mcast Client
-gcc -Wall -g ~/v6UdpMcastClt.c -o ~/v6UdpMcastClt
-echo copy mcast Client
-sudo cp ~/v6UdpMcastClt ~/mnt/v6UdpMcastClt
+
 
 if [[ $1 == *.xz ]]; then
 
@@ -457,7 +468,7 @@ EOT
 fi
 
 
-
+#gcc hostname missing ArchLinux other arch as ubuntu
 if [[ $1 == *.tar.gz ]]; then
     echo Chroot
     #perl -e 'print crypt("ansible", "salt"),"\n"'
@@ -471,11 +482,12 @@ chmod 600 /home/ansible/.ssh/authorized_keys
 chown -R ansible:ansible /home/ansible/
 rm /id_rsa.pub
 echo "pending-setup" > /etc/hostname
-echo "#!/bin/bash" > /notifyer
-echo "while true; do sleep 60; /netconfig | /v6UdpMcastClt ff03::22 9999 ; done" >> /notifyer
-chmod +x /notifyer
-chmod +x /netconfig
-chmod +x /v6UdpMcastClt
+#echo "#!/bin/bash" > /notifyer
+#echo "while true; do sleep 60; /netconfig | /v6UdpMcastClt ff03::22 9999 ; done" >> /notifyer
+#echo "while true; do sleep 60; echo `ip addr` > /dev/udp/224.0.0.1/9999 ; done" >> /notifyer
+#chmod +x /notifyer
+#chmod +x /netconfig
+#chmod +x /v6UdpMcastClt
 systemctl enable notifyer.service
 EOT
     echo Detach loop
