@@ -26,7 +26,7 @@ Your login looks like ssh ansible@[ip from nc -u -l 9999 or ./v4UdpMcastSrv]
 
 
 ## What's open
-* Ipv6 multicast announcing
+* Ipv6 multicast announcing: ubuntu work's, archliinux dosn't
 * save recognition of the pattern rootfs<->MBR/GPT
 * permit password login
 * automatische provisionirung der erkannten hosts durch ansible
