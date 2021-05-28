@@ -338,6 +338,10 @@ int main(int argc, char *argv[])
 EOF
 echo Build Mcast Server
 gcc -Wall -g ~/v6UdpMcastSrv.c -o ~/v6UdpMcastSrv
+echo Build Mcast Client
+gcc -Wall -g ~/v6UdpMcastClt.c -o ~/v6UdpMcastClt
+echo copy mcast Client
+sudo cp ~/v6UdpMcastClt ~/mnt/v6UdpMcastClt
 
 if [[ $compression == XZ ]]; then
     echo Chroot
