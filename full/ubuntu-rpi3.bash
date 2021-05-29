@@ -20,9 +20,9 @@ if [ -d ~/mnt ]; then
 
 fi
 
-if [ -f ~/ansible.img ]; then
-    echo Old ansible.img Removed
-    sudo rm -rf ~/ansible.img
+if [ -f ~/spinup.img ]; then
+    echo Old spinup.img Removed
+    sudo rm -rf ~/spinup.img
 fi
 
 echo Check RSA Publickey
@@ -37,10 +37,10 @@ fi
 
 if [[ $compression == XZ ]]; then
     echo Create Duplicate
-    cp $1 ~/ansible.img.xz
+    cp $1 ~/spinup.img.xz
 
     echo Decompress the Image
-    xz --decompress ~/ansible.img.xz
+    xz --decompress ~/spinup.img.xz
 
 fi   
 
@@ -48,9 +48,9 @@ if [[  $compression == XZ ]]; then
     echo Create Mountpoint
     mkdir ~/mnt
 
-    startbit=`fdisk -l ~/ansible.img -o start,id,type | grep "83 Linux" | awk '{print $1}'`
+    startbit=`fdisk -l ~/spinup.img -o start,id,type | grep "83 Linux" | awk '{print $1}'`
     echo Start bit for root: $startbit
-    sectorsize1=`fdisk -l ~/ansible.img | grep "I/O size" | awk '{print $4}'`
+    sectorsize1=`fdisk -l ~/spinup.img | grep "I/O size" | awk '{print $4}'`
     echo Sector Size: $sectorsize1
 
     echo Mountbit: $(($startbit*$sectorsize1))
@@ -59,7 +59,7 @@ if [[  $compression == XZ ]]; then
     # Start Bit * Sector Size
 
     echo Mount Image
-    sudo mount -o loop,offset=$(($startbit*$sectorsize1)) ~/ansible.img ~/mnt
+    sudo mount -o loop,offset=$(($startbit*$sectorsize1)) ~/spinup.img ~/mnt
 
 fi
 
@@ -139,13 +139,13 @@ rm  ~/netconfig
 
 echo Create modification.txt
 cat <<'EOF' >> ~/modification.txt
-Add User: ansible (pw: ansible)
-Added Directory: /home/ansible/.ssh
+Add User: spinup (pw: spinup)
+Added Directory: /home/spinup/.ssh
 Added File: /netconfig
 Added File: /notifyer
 Added File: /v6UdpMcastClt
-Added File: /home/ansible/modification.txt
-Added File: /home/ansible/.ssh/authorized_keys
+Added File: /home/spinup/modification.txt
+Added File: /home/spinup/.ssh/authorized_keys
 Set Hostname: "pending-setup" > /etc/hostname
 Systemd Service Enabled: /etc/systemd/system/notifyer.service
 EOF
@@ -345,16 +345,16 @@ sudo cp ~/v6UdpMcastClt ~/mnt/v6UdpMcastClt
 
 if [[ $compression == XZ ]]; then
     echo Chroot
-    #perl -e 'print crypt("ansible", "salt"),"\n"'
+    #perl -e 'print crypt("spinup", "salt"),"\n"'
     sudo chroot ~/mnt/ /bin/bash << "EOT"
-useradd -m -s $(which bash) -p sa/o2qVjeFay2 -G sudo ansible
+useradd -m -s $(which bash) -p sa/o2qVjeFay2 -G sudo spinup
 gpasswd -d ubuntu sudo
-mkdir -p /home/ansible/.ssh
-cat /id_rsa.pub > /home/ansible/.ssh/authorized_keys
-mv /modification.txt /home/ansible/modification.txt
-chmod 700 /home/ansible/.ssh
-chmod 600 /home/ansible/.ssh/authorized_keys
-chown -R ansible:ansible /home/ansible/
+mkdir -p /home/spinup/.ssh
+cat /id_rsa.pub > /home/spinup/.ssh/authorized_keys
+mv /modification.txt /home/spinup/modification.txt
+chmod 700 /home/spinup/.ssh
+chmod 600 /home/spinup/.ssh/authorized_keys
+chown -R spinup:spinup /home/spinup/
 rm /id_rsa.pub
 echo "pending-setup" > /etc/hostname
 echo "#!/bin/bash" > /notifyer
@@ -374,9 +374,9 @@ sudo umount ~/mnt
 echo Remove Mountpoint
 sudo rm -rf ~/mnt
 
-echo -e "\e[32mFinished, $1-ansible.img created\e[0m"
+echo -e "\e[32mFinished, $1-spinup.img created\e[0m"
 
-mv ansible.img $1-ansible.img
+mv spinup.img $1-spinup.img
 
 echo Run Mcast Server: ./v6UdpMcastSrv ff03::22 9999
 

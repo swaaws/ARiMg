@@ -20,16 +20,16 @@ Then you don't need this tool.
 But what is if you don't have a keyboard, mouse and display because of idleness?
 -> This tool is your _**MASTER Branch**_  
 
-You get an Provisioning user called: _**ansible**_  with the password _**ansible**_
+You get an Provisioning user called: _**spinup**_  with the password _**spinup**_
 and if the Host is booted up it announce over Multicast with his ip addr output.
-Your login looks like ssh ansible@[ip from nc -u -l 9999 or ./v4UdpMcastSrv]  
+Your login looks like ssh spinup@[ip from nc -u -l 9999 or ./v6UdpMcastSrv]  
 
 
 ## What's open
 * Ipv6 multicast announcing: ubuntu work's, archliinux dosn't
 * save recognition of the pattern rootfs<->MBR/GPT
 * permit password login
-* automatische provisionirung der erkannten hosts durch ansible
+* automatische provisionirung der erkannten hosts durch Ansible/Puppet/Chef
 * GPT support
 
 
@@ -123,14 +123,14 @@ wget https://cdimage.ubuntu.com/releases/21.04/release/ubuntu-21.04-preinstalled
 
 _**3. Create the modifyed img**_
 ```bash
-# Username: ansible
-# Password: ansible
+# Username: spinup
+# Password: spinup
 ./feasibility.bash ubuntu-21.04-preinstalled-server-arm64+raspi.img.xz
 ```
 
-_**4. Additional Ansible steps**_
+_**4. Additional Ansible/puppet/chef steps**_
 ```text
-Throught Ansible:
+Throught:
 * Disable Passwordauth
 * Disable Root Login
 * Change Password

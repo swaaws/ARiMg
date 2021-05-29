@@ -20,9 +20,9 @@ if [ -d ~/mnt ]; then
 
 fi
 
-if [ -f ~/ansible.img ]; then
-    echo Old ansible.img Removed
-    sudo rm -rf ~/ansible.img
+if [ -f ~/spinup.img ]; then
+    echo Old spinup.img Removed
+    sudo rm -rf ~/spinup.img
 fi
 
 echo Check RSA Publickey
@@ -42,20 +42,20 @@ if [[ $compression == gzip ]]; then
     echo Create Mountpoint
     mkdir ~/mnt
 
-    echo Create ansible.img
-    sudo dd of=~/ansible.img seek=3900M bs=1 count=0
+    echo Create spinup.img
+    sudo dd of=~/spinup.img seek=3900M bs=1 count=0
 
     echo Create Patition Table
-    sudo parted ~/ansible.img mktable msdos
+    sudo parted ~/spinup.img mktable msdos
 
     echo Create Boot  Patition
-    sudo parted ~/ansible.img mkpart primary fat32 2048s 257MiB
+    sudo parted ~/spinup.img mkpart primary fat32 2048s 257MiB
 
     echo Create Root Patition
-    sudo parted ~/ansible.img mkpart primary ext4 257MiB 100%
+    sudo parted ~/spinup.img mkpart primary ext4 257MiB 100%
 
-    echo Attach ansible.img to loop Device
-    loop=`sudo losetup --find --partscan --show ansible.img`
+    echo Attach spinup.img to loop Device
+    loop=`sudo losetup --find --partscan --show spinup.img`
 
     echo Create vfat on Boot Patition
     sudo mkfs.vfat -F 32 -n BOOT "${loop}p1"
@@ -155,10 +155,10 @@ rm  ~/netconfig
 
 echo Create modification.txt
 cat <<'EOF' >> ~/modification.txt
-Add User: ansible (pw: ansible)
-Added Directory: /home/ansible/.ssh
-Added File: /home/ansible/modification.txt
-Added File: /home/ansible/.ssh/authorized_keys
+Add User: spinup (pw: spinup)
+Added Directory: /home/spinup/.ssh
+Added File: /home/spinup/modification.txt
+Added File: /home/spinup/.ssh/authorized_keys
 Set Hostname: "pending-setup" > /etc/hostname
 Systemd Service Enabled: /etc/systemd/system/notifyer.service
 EOF
@@ -172,15 +172,15 @@ rm  ~/modification.txt
 
 if [[ $compression == gzip ]]; then
     echo Chroot
-    #perl -e 'print crypt("ansible", "salt"),"\n"'
+    #perl -e 'print crypt("spinup", "salt"),"\n"'
     sudo chroot ~/mnt/ /bin/bash << "EOT"
-useradd -m -s $(which bash) -p sa/o2qVjeFay2 ansible
-mkdir -p /home/ansible/.ssh
-cat /id_rsa.pub > /home/ansible/.ssh/authorized_keys
-mv /modification.txt /home/ansible/modification.txt
-chmod 700 /home/ansible/.ssh
-chmod 600 /home/ansible/.ssh/authorized_keys
-chown -R ansible:ansible /home/ansible/
+useradd -m -s $(which bash) -p sa/o2qVjeFay2 spinup
+mkdir -p /home/spinup/.ssh
+cat /id_rsa.pub > /home/spinup/.ssh/authorized_keys
+mv /modification.txt /home/spinup/modification.txt
+chmod 700 /home/spinup/.ssh
+chmod 600 /home/spinup/.ssh/authorized_keys
+chown -R spinup:spinup /home/spinup/
 rm /id_rsa.pub
 echo "pending-setup" > /etc/hostname
 systemctl enable notifyer.service
@@ -198,7 +198,7 @@ sudo umount ~/mnt
 echo Remove Mountpoint
 sudo rm -rf ~/mnt
 
-echo -e "\e[32mFinished, $1-ansible.img created\e[0m"
+echo -e "\e[32mFinished, $1-spinup.img created\e[0m"
 
-mv ansible.img $1-ansible.img
+mv spinup.img $1-spinup.img
 
