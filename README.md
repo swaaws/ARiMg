@@ -34,13 +34,12 @@ Your login looks like ssh spinup@[ip from ./deploy_cache.bash]
 ./deploy_cache
 ./deploy_done
 ```
+_**Scroll down look at point 6. Additional Ansible/Puppet/Chef steps**_  
 
 ## What's open
 * permit password login
-* automatische provisionirung der erkannten hosts durch Ansible/Puppet/Chef
+* automatic provision thought Ansible/Puppet/Chef
 * GPT support
-
-
 
 
 ## Download Structure
@@ -206,7 +205,7 @@ ubuntu@raspberry:~$ ./deploy_done.bash
 
 ```
 
-_**6. Additional Ansible/puppet/chef steps**_
+_**6. Additional Ansible/Puppet/Chef steps**_
 ```text
 Throught:
 * Disable Passwordauth
