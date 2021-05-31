@@ -13,21 +13,19 @@ modify SD Card Images according to the [Acorn RISC Machine (ARM)](https://en.wik
 
 
 ## Preamble
-In cases you need to setup a arm (raspberry like) host.
+In cases you need to setup many arm (raspberry like) hosts.
 You get an img from the Website and flashing it with _**dd**_ to the sd card
 you plug network, keyboard, mouse, display and power. All fine?
 Then you don't need this tool.
 But what is if you don't have a keyboard, mouse and display because of idleness?
--> This tool is your _**MASTER Branch**_  
+-> This tool can Fits your _**Needs**_  
 
 You get an Provisioning user called: _**spinup**_  with the password _**spinup**_
-and if the Host is booted up it announce over Multicast with his ip addr output.
-Your login looks like ssh spinup@[ip from nc -u -l 9999 or ./v6UdpMcastSrv]  
+and if the Host is booted up it announce over ssh to your deploy host with usefull output.
+Your login looks like ssh spinup@[ip from ./deploy_cache.bash]  
 
 
 ## What's open
-* Ipv6 multicast announcing: ubuntu work's, archliinux dosn't
-* save recognition of the pattern rootfs<->MBR/GPT
 * permit password login
 * automatische provisionirung der erkannten hosts durch Ansible/Puppet/Chef
 * GPT support
