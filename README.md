@@ -32,7 +32,7 @@ Your login looks like ssh spinup@[ip from ./deploy_cache.bash]
 # 2 (ArchLinuxArm example)
 # want shell access befor finish: n/y
 ./deploy_cache
-./deploy_done
+./deploy_done      <- !!!!Important!!!!
 ```
 _**Scroll down look at point 6. Additional Ansible/Puppet/Chef steps**_  
 
@@ -53,7 +53,7 @@ or as a Plain Root Directory(rootfs):
   i.e. ubuntu-21.04-preinstalled-server-arm64+raspi.img.xz
 - ...
 
-## Image Structure 
+## Image Structure
 
 _**SD Card Img**_
 ```text
