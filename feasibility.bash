@@ -3,19 +3,25 @@
 programname=$0
 
 if test "$#" -ne 1; then
-    echo "usage: $programname unix.img.xz"
+    echo "usage: $programname ubuntu-21.04-preinstalled-server-arm64+raspi.img.xz"
     exit
 fi
 
 compression=`file $1 | awk '{print $2}'`
-
-
+echo get file info
+echo shasum: `shasum $1 | awk '{print $1}'`
+echo File: $1
 echo Compression detected: $compression
+
 echo Chosse Filedesign: [1] - sd_card-image, [2] - plain_rootfs
 read filedesign
 
+echo want shell access to img? [y] - yes, [n] - no
+read shellaccess
+
 if [ -d ~/mnt ]; then
-    echo Old mnt Removed
+    echo Remove mnt
+    sudo umount mnt/boot
     sudo umount mnt
     sudo rm -rf ~/mnt
 
@@ -37,40 +43,36 @@ else
 fi
 
 
-case $compression in
-
-    Zip)
-        echo Unzip the Image
-        unzip $1 -d ~/temp
-        mv ~/temp/* ~/spinup.img
-        rm -rf temp
-        ;;
-
-    XZ)
-        echo Create Duplicate
-        cp $1 ~/spinup.img.xz
-
-        echo Decompress the Image
-        xz --decompress ~/spinup.img.xz
-        ;;
-
-    PATTERN_N)
-        STATEMENTS
-        ;;
-
-    *)
-        echo unknown compression
-        break
-        ;;
-esac
-
-
-
-
-
-
 #sd_card-image
 if [[  $filedesign == 1 ]]; then
+    case $compression in
+
+        Zip)
+            echo Decompress Zip
+            unzip $1 -d ~/temp
+            mv ~/temp/*.img ~/spinup.img
+            rm -rf temp
+            ;;
+
+        XZ)
+            echo Create Duplicate
+            cp $1 ~/spinup.img.xz
+
+            echo Decompress xz
+            xz --decompress ~/spinup.img.xz
+            ;;
+
+        gzip)
+            exit 1
+
+            echo Decompress gzip
+            ;;
+
+        *)
+            echo unknown compression
+            exit 1
+            ;;
+    esac
     echo Create Mountpoint
     mkdir ~/mnt
 
@@ -93,6 +95,7 @@ fi
 
 #plain_rootfs
 if [[  $filedesign == 2 ]]; then
+
 
     echo Create Mountpoint
     mkdir ~/mnt
@@ -124,9 +127,32 @@ if [[  $filedesign == 2 ]]; then
     echo Mount Boot Patition
     sudo mkdir ~/mnt/boot
     sudo mount "${loop}p1" ~/mnt/boot
+    case $compression in
 
-    echo Decompress the file \(needs time...\)
-    sudo bsdtar -xpf ~/$1 -C ~/mnt
+        Zip)
+            exit 1
+            echo Decompress Zip \(needs time...\)
+            unzip $1 -d ~/mnt
+            ;;
+
+        XZ)
+            exit 1
+            echo Decompress the file \(needs time...\)
+            xz --decompress $1 ~/mnt
+            ;;
+
+        gzip)
+
+            echo Decompress the file \(needs time...\)
+            sudo bsdtar -xpf ~/$1 -C ~/mnt
+            ;;
+
+        *)
+            echo unknown compression
+            exit 1
+            ;;
+    esac
+
 
     sync
 fi
@@ -138,6 +164,7 @@ fi
 #   4194304 164e1bdd70d743eda3395444a5a5bbdedbab5b04 Debian    ARMHF bone-debian-10.3-iot-armhf-2020-04-06-4gb.img.xz
 #   4194304 8be911fb79156cf4f80bc1451f887883359bca46 Debian    ARMHF bone-eMMC-flasher-debian-10.3-iot-armhf-2020-04-06-4gb.img.xz
 #    532480 f30f9bb907a33736b7d7543da80fac3b1d6c6651 Debian    ARMHF 2021-03-04-raspios-buster-armhf-lite.zip
+#    532480 5e402402984b4f9216b2a3eff1f830d169afd4ea Debian    ARMHF 2021-05-07-raspios-buster-armhf-lite.zip
 #         0 4f0fe7bc9944ca244c3f719da46386200d94a253 ArchLinux ARM64 ArchLinuxARM-rpi-2-latest.tar.gz
 #
 #
@@ -146,6 +173,8 @@ fi
 #
 # TODO: offset by sha hash
 #--------------------------------------------------------#
+
+
 
 if [ -d ~/mnt/etc/ ]; then
     echo "Mount Suxxxxxess"
@@ -460,6 +489,13 @@ echo "while true; do sleep 60; echo `ip addr` > /dev/udp/224.0.0.1/9999 ; done" 
 #chmod +x /v6UdpMcastClt
 systemctl enable notifyer.service
 EOT
+fi
+if [[  $shellaccess == y ]]; then
+bash -c sudo chroot ~/mnt/
+fi
+
+
+if [[  $filedesign == 2 ]]; then
     echo Detach loop
     sudo losetup --detach-all
     echo Unmount mnt / boot
