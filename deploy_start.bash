@@ -7,17 +7,18 @@ if test "$#" -ne 1; then
     exit
 fi
 
-compression=`file $1 | awk '{print $2}'`
-echo get file info
-echo shasum: `shasum $1 | awk '{print $1}'`
-echo File: $1
-echo Compression detected: $compression
-
 
 read -p "Chosse Filedesign: [1] - sd_card-image, [2] - plain_rootfs: " filedesign
 
 echo
 read -p "want shell access to img? [y] - yes, [n] - no: " shellaccess
+
+
+compression=`file $1 | awk '{print $2}'`
+echo get file info
+echo shasum: `shasum $1 | awk '{print $1}'`
+echo File: $1
+echo Compression detected: $compression
 
 if [ -d ~/mnt ]; then
     echo Remove mnt
@@ -253,7 +254,9 @@ cat <<'EOF' >> ~/modification.txt
 Add User: spinup (pw: spinup)
 Added Directory: /home/spinup/.ssh
 Added File: /netconfig
+Host generated File: /netconfig_data
 Added File: /notifyer
+Added File: /finish.bash
 Added File: /home/spinup/modification.txt
 Added File: /home/spinup/.ssh/authorized_keys
 Set Hostname: "pending-setup" > /etc/hostname
@@ -266,24 +269,16 @@ rm  ~/modification.txt
 
 
 echo Create finish.bash
-cat <<'EOF' >> ~/modification.txt
-Add User: spinup (pw: spinup)
-Added Directory: /home/spinup/.ssh
-Added File: /netconfig
-Added File: /notifyer
-Added File: /home/spinup/modification.txt
-Added File: /home/spinup/.ssh/authorized_keys
-Set Hostname: "pending-setup" > /etc/hostname
-
+cat <<'EOF' >> ~/finish.bash
 systemctl disable notifyer.service
 systemctl stop notifyer.service
-
 rm /netconfig /netconfig_data /notifyer /etc/systemd/system/notifyer.service /home/spinup/modification.txt
-
+echo "finished-setup" > /etc/hostname
+rm finish.bash
 EOF
-echo Copy modification.txt to Root fs
-sudo cp -f ~/modification.txt ~/mnt/modification.txt
-rm  ~/modification.txt
+echo Copy finish.bash to Root fs
+sudo cp -f ~/finish.bash ~/mnt/finish.bash
+rm  ~/finish.bash
 
 
 
@@ -304,39 +299,15 @@ sudo cp -f ~/notifyer ~/mnt/notifyer
 rm  ~/notifyer
 
 
-
-
-if [[  $filedesign == 1 ]]; then
-    echo Chroot
-    #perl -e 'print crypt("spinup", "salt"),"\n"'
-    sudo chroot ~/mnt/ /bin/bash << "EOT"
-useradd -m -s $(which bash) -p saurX9qN91.BQ -G sudo spinup
-gpasswd -d ubuntu sudo
-mkdir -p /home/spinup/.ssh
-cat /id_rsa.pub > /home/spinup/.ssh/authorized_keys
-mv /modification.txt /home/spinup/modification.txt
-chmod 700 /root/.ssh/id_rsa
-chmod 700 /home/spinup/.ssh
-chmod 600 /home/spinup/.ssh/authorized_keys
-chown -R spinup:spinup /home/spinup/
-rm /id_rsa.pub
-echo "pending-setup" > /etc/hostname
-chmod +x /notifyer
-chmod +x /netconfig
-systemctl enable notifyer.service
-EOT
-fi
-
-
-#gcc hostname missing ArchLinux other arch as ubuntu
-if [[  $filedesign == 2 ]]; then
-    echo Chroot
-    #perl -e 'print crypt("spinup", "salt"),"\n"'
-    sudo chroot ~/mnt/ /bin/bash << "EOT"
+echo Chroot
+#perl -e 'print crypt("spinup", "salt"),"\n"'
+sudo chroot ~/mnt/ /bin/bash << "EOT"
 useradd -m -s $(which bash) -p saurX9qN91.BQ spinup
+useradd -m -s $(which bash) -p saurX9qN91.BQ -G sudo spinup
 mkdir -p /home/spinup/.ssh
 cat /id_rsa.pub > /home/spinup/.ssh/authorized_keys
 mv /modification.txt /home/spinup/modification.txt
+mv id_rsa.pub /root/.ssh/id_rsa
 chmod 700 /root/.ssh/id_rsa
 chmod 700 /home/spinup/.ssh
 chmod 600 /home/spinup/.ssh/authorized_keys
@@ -347,9 +318,9 @@ chmod +x /notifyer
 chmod +x /netconfig
 systemctl enable notifyer.service
 EOT
-fi
+
 if [[  $shellaccess == y ]]; then
-echo interactive shell CTRL-d if done
+echo interactive shell! CTRL-d if done
 bash -c "sudo chroot ~/mnt/"
 fi
 
@@ -369,10 +340,12 @@ sudo umount ~/mnt
 echo Remove Mountpoint
 sudo rm -rf ~/mnt
 
-echo -e "\e[32mFinished, $1-spinup.img created\e[0m"
+
 if [ -f ~/$1-spinup.img.old ]; then
 echo Removed $1-spinup.img.old
 sudo rm -rf ~/$1-spinup.img.old
 fi
 mv $1-spinup.img $1-spinup.img.old
 mv spinup.img $1-spinup.img
+
+echo -e "\e[32mFinished, $1-spinup.img created\e[0m"
