@@ -29,7 +29,7 @@ Your login looks like ssh spinup@[ip from ./deploy_cache.bash]
 ```bash
 ./deploy_start.bash ArchLinuxARM-rpi-2-latest.tar.gz
 # know the layout of your file: 1(Partition table) , 2(Compressed root)
-# 2 (Arch example)
+# 2 (ArchLinuxArm example)
 # want shell access befor finish: n/y
 ./deploy_cache
 ./deploy_done
