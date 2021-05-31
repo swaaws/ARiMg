@@ -11,7 +11,8 @@ compression=`file $1 | awk '{print $2}'`
 
 
 echo Compression detected: $compression
-
+echo Chosse Filedesign: [1] - sd_card-image, [2] - plain_rootfs
+read filedesign
 
 if [ -d ~/mnt ]; then
     echo Old mnt Removed
@@ -36,31 +37,40 @@ else
 fi
 
 
+case $compression in
+
+    Zip)
+        echo Unzip the Image
+        unzip $1 -d ~/temp
+        mv ~/temp/* ~/spinup.img
+        rm -rf temp
+        ;;
+
+    XZ)
+        echo Create Duplicate
+        cp $1 ~/spinup.img.xz
+
+        echo Decompress the Image
+        xz --decompress ~/spinup.img.xz
+        ;;
+
+    PATTERN_N)
+        STATEMENTS
+        ;;
+
+    *)
+        echo unknown compression
+        break
+        ;;
+esac
 
 
 
 
-if [[ $compression == Zip ]]; then
-    echo Unzip the Image
-    unzip $1 -d ~/temp
-    mv ~/temp/* ~/spinup.img
-    rm -rf temp
-
-fi      
-if [[ $compression == XZ ]]; then
-    echo Create Duplicate
-    cp $1 ~/spinup.img.xz
-
-    echo Decompress the Image
-    xz --decompress ~/spinup.img.xz
-
-fi      
-
-#TODO: handle images
-#file spinup.img
 
 
-if [[  $compression == XZ ]]; then
+#sd_card-image
+if [[  $filedesign == 1 ]]; then
     echo Create Mountpoint
     mkdir ~/mnt
 
@@ -79,28 +89,10 @@ if [[  $compression == XZ ]]; then
 
 fi
 
-#Raspbian
-if [[ $1 == *.zip ]]; then
-    echo Create Mountpoint
-    mkdir ~/mnt
 
-    
-    startbit=`fdisk -l ~/spinup.img -o start,id,type | grep "83 Linux" | awk '{print $1}'`
-    echo Start bit for root: $startbit
-    sectorsize1=`fdisk -l ~/spinup.img | grep "I/O size" | awk '{print $4}'`
-    echo Sector Size: $sectorsize1
 
-    echo Mountbit: $(($startbit*$sectorsize1))
-
-    #   526336  *    512
-    # Start Bit * Sector Size
-
-    echo Mount Image
-    sudo mount -o loop,offset=$(($startbit*$sectorsize1)) ~/spinup.img ~/mnt
-fi
-
-#Arch
-if [[ $compression == gzip ]]; then
+#plain_rootfs
+if [[  $filedesign == 2 ]]; then
 
     echo Create Mountpoint
     mkdir ~/mnt
@@ -422,32 +414,7 @@ echo copy mcast Client
 sudo cp ~/v6UdpMcastClt ~/mnt/v6UdpMcastClt
 
 
-if [[ $1 == *.xz ]]; then
-
-    echo Chroot
-    #perl -e 'print crypt("spinup", "salt"),"\n"'
-    sudo chroot ~/mnt/ /bin/bash << "EOT"
-useradd -m -s $(which bash) -p saurX9qN91.BQ -G sudo spinup
-gpasswd -d ubuntu sudo
-mkdir -p /home/spinup/.ssh
-cat /id_rsa.pub > /home/spinup/.ssh/authorized_keys
-mv /modification.txt /home/spinup/modification.txt
-chmod 700 /home/spinup/.ssh
-chmod 600 /home/spinup/.ssh/authorized_keys
-chown -R spinup:spinup /home/spinup/
-rm /id_rsa.pub
-echo "pending-setup" > /etc/hostname
-echo "#!/bin/bash" > /notifyer
-echo "while true; do sleep 60; /netconfig | /v6UdpMcastClt ff03::22 9999 ; done" >> /notifyer
-chmod +x /notifyer
-chmod +x /netconfig
-chmod +x /v6UdpMcastClt
-systemctl enable notifyer.service
-EOT
-fi
-
-
-if [[ $1 == *.zip ]]; then
+if [[  $filedesign == 1 ]]; then
     echo Chroot
     #perl -e 'print crypt("spinup", "salt"),"\n"'
     sudo chroot ~/mnt/ /bin/bash << "EOT"
@@ -472,7 +439,7 @@ fi
 
 
 #gcc hostname missing ArchLinux other arch as ubuntu
-if [[ $1 == *.tar.gz ]]; then
+if [[  $filedesign == 2 ]]; then
     echo Chroot
     #perl -e 'print crypt("spinup", "salt"),"\n"'
     sudo chroot ~/mnt/ /bin/bash << "EOT"
@@ -487,7 +454,7 @@ rm /id_rsa.pub
 echo "pending-setup" > /etc/hostname
 #echo "#!/bin/bash" > /notifyer
 #echo "while true; do sleep 60; /netconfig | /v6UdpMcastClt ff03::22 9999 ; done" >> /notifyer
-#echo "while true; do sleep 60; echo `ip addr` > /dev/udp/224.0.0.1/9999 ; done" >> /notifyer
+echo "while true; do sleep 60; echo `ip addr` > /dev/udp/224.0.0.1/9999 ; done" >> /notifyer
 #chmod +x /notifyer
 #chmod +x /netconfig
 #chmod +x /v6UdpMcastClt
