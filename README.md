@@ -130,8 +130,6 @@ wget https://cdimage.ubuntu.com/releases/21.04/release/ubuntu-21.04-preinstalled
 
 _**3. Start Deployment**_
 ```bash
-# Username: spinup
-# Password: spinup
 ubuntu@raspberry:~$ ./deploy_start.bash ubuntu-21.04-preinstalled-server-arm64+raspi.img.xz
 Chosse Filedesign: [1] - sd_card-image, [2] - plain_rootfs: 1
 want shell access to img? [y] - yes, [n] - no: y
@@ -167,21 +165,21 @@ Chroot
 useradd: user 'spinup' already exists
 Created symlink /etc/systemd/system/multi-user.target.wants/notifyer.service → /etc/systemd/system/notifyer.service.
 interactive shell! CTRL-d if done
-root@interceptor:/# cat /etc/os-release
-NAME="Ubuntu"
-VERSION="21.04 (Hirsute Hippo)"
-ID=ubuntu
-ID_LIKE=debian
-PRETTY_NAME="Ubuntu 21.04"
-VERSION_ID="21.04"
-HOME_URL="https://www.ubuntu.com/"
-SUPPORT_URL="https://help.ubuntu.com/"
-BUG_REPORT_URL="https://bugs.launchpad.net/ubuntu/"
-PRIVACY_POLICY_URL="https://www.ubuntu.com/legal/terms-and-policies/privacy-policy"
-VERSION_CODENAME=hirsute
-UBUNTU_CODENAME=hirsute
-root@interceptor:/#
-exit
+  root@raspberry:/# cat /etc/os-release
+    NAME="Ubuntu"
+    VERSION="21.04 (Hirsute Hippo)"
+    ID=ubuntu
+    ID_LIKE=debian
+    PRETTY_NAME="Ubuntu 21.04"
+    VERSION_ID="21.04"
+    HOME_URL="https://www.ubuntu.com/"
+    SUPPORT_URL="https://help.ubuntu.com/"
+    BUG_REPORT_URL="https://bugs.launchpad.net/ubuntu/"
+    PRIVACY_POLICY_URL="https://www.ubuntu.com/legal/terms-and-policies/privacy-policy"
+    VERSION_CODENAME=hirsute
+    UBUNTU_CODENAME=hirsute
+  root@raspberry:/#
+    exit/CTRL-d
 Unmount Image
 Remove Mountpoint
 Finished, ubuntu-21.04-preinstalled-server-arm64+raspi.img.xz-spinup.img created
@@ -189,7 +187,8 @@ Finished, ubuntu-21.04-preinstalled-server-arm64+raspi.img.xz-spinup.img created
 ```
 _**4. Cache Hosts**_
 ```bash
-
+# Username: spinup
+# Password: spinup
 ubuntu@raspberry:~$ ./deploy_cache.bash
 Hosts in File: 3
 hostname: pending-setup gateway: 2001:DB8::/32 global6: 2001:DB8::1/32 link-local: fe80:DB8::/32 mac_addr: ff:ff:ff:ff:ff:ff status: running failed: 0 units
@@ -200,7 +199,7 @@ hostname: pending-setup gateway: 2001:DB8::/32 global6: 2001:DB8::3/32 link-loca
 
 _**5. Finish Deployment**_
 ```bash
-
+# This Step is important because simple password -> ssh key to your deployment host
 ubuntu@raspberry:~$ ./deploy_done.bash
 
 ```
