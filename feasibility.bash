@@ -13,11 +13,11 @@ echo shasum: `shasum $1 | awk '{print $1}'`
 echo File: $1
 echo Compression detected: $compression
 
-echo Chosse Filedesign: [1] - sd_card-image, [2] - plain_rootfs
-read filedesign
 
-echo want shell access to img? [y] - yes, [n] - no
-read shellaccess
+read -p "Chosse Filedesign: [1] - sd_card-image, [2] - plain_rootfs: " filedesign
+
+echo
+read -p "want shell access to img? [y] - yes, [n] - no: " shellaccess
 
 if [ -d ~/mnt ]; then
     echo Remove mnt
@@ -28,16 +28,16 @@ if [ -d ~/mnt ]; then
 fi
 
 if [ -f ~/spinup.img ]; then
-    echo Old spinup.img Removed
+    echo Removed spinup.img
     sudo rm -rf ~/spinup.img
 fi
 
-echo Check RSA Publickey
+
 if [ -f ".ssh/id_rsa.pub" ]; then
-    echo RSA Found;
+    echo  Found RSA Publickey;
 else
-    echo please run ssh-keygen
-    exit
+    echo Please run ssh-keygen
+    exit 1
     # echo Generate RSA;
     # ssh-keygen -q -N "";
 fi
@@ -69,7 +69,7 @@ if [[  $filedesign == 1 ]]; then
             ;;
 
         *)
-            echo unknown compression
+            echo unknown compression: $compression
             exit 1
             ;;
     esac
@@ -101,7 +101,7 @@ if [[  $filedesign == 2 ]]; then
     mkdir ~/mnt
 
     echo Create spinup.img
-    sudo dd of=~/spinup.img seek=3900M bs=1 count=0
+    sudo dd of=~/spinup.img seek=3900M bs=1 count=0 status=none
 
     echo Create Patition Table
     sudo parted ~/spinup.img mktable msdos
@@ -116,10 +116,10 @@ if [[  $filedesign == 2 ]]; then
     loop=`sudo losetup --find --partscan --show spinup.img`
 
     echo Create vfat on Boot Patition
-    sudo mkfs.vfat -F 32 -n BOOT "${loop}p1"
+    sudo mkfs.vfat -F 32 -n BOOT "${loop}p1" > /dev/null
 
     echo Create ext4 on Root Partition
-    sudo mkfs.ext4 -L rootfs "${loop}p2"
+    sudo mkfs.ext4 -L rootfs "${loop}p2" | grep ,
 
     echo Mount Root Patition
     sudo mount "${loop}p2" ~/mnt/
@@ -149,6 +149,12 @@ if [[  $filedesign == 2 ]]; then
 
         *)
             echo unknown compression
+            echo Remove mnt
+            sudo umount mnt/boot
+            sudo umount mnt
+            sudo rm -rf ~/mnt
+            sudo rm -rf ~/spinup.img
+
             exit 1
             ;;
     esac
@@ -491,7 +497,8 @@ systemctl enable notifyer.service
 EOT
 fi
 if [[  $shellaccess == y ]]; then
-bash -c sudo chroot ~/mnt/
+  echo interactive shell CTRL-d if done
+bash -c "sudo chroot ~/mnt/"
 fi
 
 
