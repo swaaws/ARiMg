@@ -47,7 +47,7 @@ if [ -f ".ssh/reverse_rsa.pub" ]; then
 else
     echo Generate remote sshkey
     ssh-keygen -f .ssh/reverse_rsa  -N ""
-    cat .ssh/reverse_rsa.pub >> .ssh/known_hosts
+    cat .ssh/reverse_rsa.pub >> .ssh/authorized_keys
 fi
 
 
@@ -221,7 +221,8 @@ EOF
 
 echo Copy notifyer.service to Root fs
 sudo cp -f ~/notifyer.service ~/mnt/etc/systemd/system/notifyer.service
-sudo cp -f ~/.ssh/reverse_rsa /root/.ssh/id_rsa
+sudo mkdir mnt/.ssh
+sudo cp -f ~/.ssh/reverse_rsa ~/mnt/root/.ssh/id_rsa
 
 echo Remove notifyer.service
 rm  ~/notifyer.service
@@ -265,7 +266,7 @@ echo "#!/bin/bash" > ~/notifyer
 echo "while true; do" >> ~/notifyer
 echo "sleep 60;" >> ~/notifyer
 echo "/netconfig > /netconfig_data;" >> ~/notifyer
-echo "scp -i /root/.ssh/id_rsa /netconfig_data $myuser@[$myip]:~/`ip addr | grep ether | awk '{print $2}'` ;" >> ~/notifyer
+echo "scp -o 'StrictHostKeyChecking no' -i /root/.ssh/id_rsa /netconfig_data $myuser@[$myip]:~/pending ;" >> ~/notifyer
 echo "done" >> ~/notifyer
 
 
@@ -292,6 +293,7 @@ gpasswd -d ubuntu sudo
 mkdir -p /home/spinup/.ssh
 cat /id_rsa.pub > /home/spinup/.ssh/authorized_keys
 mv /modification.txt /home/spinup/modification.txt
+chmod 700 /root/.ssh/id_rsa
 chmod 700 /home/spinup/.ssh
 chmod 600 /home/spinup/.ssh/authorized_keys
 chown -R spinup:spinup /home/spinup/
@@ -299,7 +301,6 @@ rm /id_rsa.pub
 echo "pending-setup" > /etc/hostname
 chmod +x /notifyer
 chmod +x /netconfig
-chmod +x /v6UdpMcastClt
 systemctl enable notifyer.service
 EOT
 fi
@@ -314,6 +315,7 @@ useradd -m -s $(which bash) -p saurX9qN91.BQ spinup
 mkdir -p /home/spinup/.ssh
 cat /id_rsa.pub > /home/spinup/.ssh/authorized_keys
 mv /modification.txt /home/spinup/modification.txt
+chmod 700 /root/.ssh/id_rsa
 chmod 700 /home/spinup/.ssh
 chmod 600 /home/spinup/.ssh/authorized_keys
 chown -R spinup:spinup /home/spinup/
@@ -321,7 +323,6 @@ rm /id_rsa.pub
 echo "pending-setup" > /etc/hostname
 chmod +x /notifyer
 chmod +x /netconfig
-chmod +x /v6UdpMcastClt
 systemctl enable notifyer.service
 EOT
 fi
@@ -347,7 +348,9 @@ echo Remove Mountpoint
 sudo rm -rf ~/mnt
 
 echo -e "\e[32mFinished, $1-spinup.img created\e[0m"
-
+if [ -f ~/$1-spinup.img.old ]; then
+echo Removed $1-spinup.img.old
+sudo rm -rf ~/$1-spinup.img.old
+fi
+mv $1-spinup.img $1-spinup.img.old
 mv spinup.img $1-spinup.img
-
-echo Run Mcast Server: ./v6UdpMcastSrv ff03::22 9999
