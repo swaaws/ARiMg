@@ -3,16 +3,16 @@
     <img src="logo.svg" width="400">
 </p>
 
-# Welcome to ARiMg
+# 🙏 Welcome to ARiMg 🙏
 
-## What's ARiMg?
+## 🧐 What's ARiMg? 🧐
 
 AR' iM' g'  is a helper that includes everything* needed to
 modify SD Card Images according to the [Acorn RISC Machine (ARM)](https://en.wikipedia.org/wiki/ARM_architecture) Platform.
 *dependencys not included
 
 
-## Preamble
+## 📓 Preamble 📓
 In cases you need to setup many arm (raspberry like) hosts.
 You get an img from the Website and flashing it with _**dd**_ to the sd card
 you plug network, keyboard, mouse, display and power. All fine?
@@ -25,7 +25,7 @@ and if the Host is booted up it announce over ssh to your deploy host with usefu
 Your login looks like ssh spinup@[ip from ./deploy_cache.bash]
 
 
-## For the fast ones
+## ⚡️ For the fast ones ⚡️
 ```bash
 ./deploy_start.bash ArchLinuxARM-rpi-2-latest.tar.gz
 # know the layout of your file: 1(Partition table) , 2(Compressed root)
@@ -36,7 +36,7 @@ Your login looks like ssh spinup@[ip from ./deploy_cache.bash]
 ```
 _**Scroll down look at point 6. Additional Ansible/Puppet/Chef steps**_  
 
-## What's open
+## 📖 What's open 📖
 * permit password login
 * automatic provision thought Ansible/Puppet/Chef
 * GPT support
@@ -53,7 +53,7 @@ or as a Plain Root Directory(rootfs):
   i.e. ubuntu-21.04-preinstalled-server-arm64+raspi.img.xz
 - ...
 
-## Image Structur
+## Image Structure 
 
 _**SD Card Img**_
 ```text
@@ -95,7 +95,7 @@ _**Plain Root Directory**_
  | mnt
 ```
 
-## Supported Images
+## 🎗 Supported Images 🎗
 
 
 _**ubuntu  arm64 raspi**_
@@ -114,7 +114,7 @@ _**ArchLinuxARM**_
 
 
 
-## Getting Started
+## 🏁 Getting Started 🏁
 
 _**1. Download the Repo**_
 ```bash
