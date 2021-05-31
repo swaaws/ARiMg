@@ -22,8 +22,18 @@ But what is if you don't have a keyboard, mouse and display because of idleness?
 
 You get an Provisioning user called: _**spinup**_  with the password _**spinup**_
 and if the Host is booted up it announce over ssh to your deploy host with usefull output.
-Your login looks like ssh spinup@[ip from ./deploy_cache.bash]  
+Your login looks like ssh spinup@[ip from ./deploy_cache.bash]
 
+
+## For the fast ones
+```bash
+./deploy_start.bash ArchLinuxARM-rpi-2-latest.tar.gz
+# know the layout of your file: 1(Partition table) , 2(Compressed root)
+# 2 (Arch example)
+# want shell access befor finish: y
+./deploy_cache
+./deploy_done
+```
 
 ## What's open
 * permit password login
