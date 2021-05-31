@@ -46,8 +46,10 @@ if [ -f ".ssh/reverse_rsa.pub" ]; then
 else
     echo Generate remote sshkey
     ssh-keygen -f .ssh/reverse_rsa  -N ""
-    cat .ssh/reverse_rsa.pub >> .ssh/authorized_keys
+
 fi
+echo "$(grep -v "`cat ~/.ssh/reverse_rsa.pub`" ~/.ssh/authorized_keys)" > ~/.ssh/authorized_keys
+cat ~/.ssh/reverse_rsa.pub >> ~/.ssh/authorized_keys
 
 
 
