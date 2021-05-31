@@ -73,9 +73,9 @@ if [[  $filedesign == 1 ]]; then
             ;;
 
         gzip)
-            exit 1
 
-            echo Decompress gzip
+            echo TODO: Decompress gzip with img architecture
+            exit 1
             ;;
 
         *)
@@ -342,11 +342,14 @@ echo Remove Mountpoint
 sudo rm -rf ~/mnt
 
 
-if [ -f ~/$1-spinup.img.old ]; then
-echo Removed $1-spinup.img.old
-sudo rm -rf ~/$1-spinup.img.old
-fi
+if [ -f ~/$1-spinup.img ]; then
+  if [ -f ~/$1-spinup.img.old ]; then
+    echo Removed $1-spinup.img.old
+    sudo rm -rf ~/$1-spinup.img.old
+  fi
 mv $1-spinup.img $1-spinup.img.old
+fi
+
 mv spinup.img $1-spinup.img
 
 echo -e "\e[32mFinished, $1-spinup.img created\e[0m"
