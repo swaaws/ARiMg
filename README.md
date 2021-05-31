@@ -121,19 +121,92 @@ _**2. Download a Operating System**_
 wget https://cdimage.ubuntu.com/releases/21.04/release/ubuntu-21.04-preinstalled-server-arm64+raspi.img.xz
 ```
 
-_**3. Create the modifyed img**_
+_**3. Start Deployment**_
 ```bash
 # Username: spinup
 # Password: spinup
-./feasibility.bash ubuntu-21.04-preinstalled-server-arm64+raspi.img.xz
+ubuntu@raspberry:~$ ./deploy_start.bash ubuntu-21.04-preinstalled-server-arm64+raspi.img.xz
+Chosse Filedesign: [1] - sd_card-image, [2] - plain_rootfs: 1
+want shell access to img? [y] - yes, [n] - no: y
+get file info
+shasum: b3a80ce2979a0841c06831475993cfff80e5614c
+File: ubuntu-21.04-preinstalled-server-arm64+raspi.img.xz
+Compression detected: XZ
+Found RSA Publickey
+Found Reverse RSA Publickey
+Create Duplicate
+Decompress xz
+...
+Create Mountpoint
+Start bit for root: 526336
+Sector Size: 512
+Mountbit: 269484032
+Mount Image
+Mount Suxxxxxess
+Copy RSA to root fs
+Create notifyer.service
+Copy notifyer.service to Root fs
+Remove notifyer.service
+Create netconfig
+Copy netconfig to Root fs
+Remove netconfig
+Create modification.txt
+Copy modification.txt to Root fs
+Create finish.bash
+Copy finish.bash to Root fs
+Create notifyer
+Copy modification.txt to Root fs
+Chroot
+useradd: user 'spinup' already exists
+Created symlink /etc/systemd/system/multi-user.target.wants/notifyer.service → /etc/systemd/system/notifyer.service.
+interactive shell! CTRL-d if done
+root@interceptor:/# cat /etc/os-release
+NAME="Ubuntu"
+VERSION="21.04 (Hirsute Hippo)"
+ID=ubuntu
+ID_LIKE=debian
+PRETTY_NAME="Ubuntu 21.04"
+VERSION_ID="21.04"
+HOME_URL="https://www.ubuntu.com/"
+SUPPORT_URL="https://help.ubuntu.com/"
+BUG_REPORT_URL="https://bugs.launchpad.net/ubuntu/"
+PRIVACY_POLICY_URL="https://www.ubuntu.com/legal/terms-and-policies/privacy-policy"
+VERSION_CODENAME=hirsute
+UBUNTU_CODENAME=hirsute
+root@interceptor:/#
+exit
+Unmount Image
+Remove Mountpoint
+Finished, ubuntu-21.04-preinstalled-server-arm64+raspi.img.xz-spinup.img created
+
+```
+_**4. Cache Hosts**_
+```bash
+
+ubuntu@raspberry:~$ ./deploy_cache.bash
+Hosts in File: 3
+hostname: pending-setup gateway: 2001:DB8::/32 global6: 2001:DB8::1/32 link-local: fe80:DB8::/32 mac_addr: ff:ff:ff:ff:ff:ff status: running failed: 0 units
+hostname: pending-setup gateway: 2001:DB8::/32 global6: 2001:DB8::2/32 link-local: fe80:DB8::/32 mac_addr: ff:ff:ff:ff:ff:ff status: running failed: 0 units
+hostname: pending-setup gateway: 2001:DB8::/32 global6: 2001:DB8::3/32 link-local: fe80:DB8::/32 mac_addr: ff:ff:ff:ff:ff:ff status: running failed: 0 units
+...
 ```
 
-_**4. Additional Ansible/puppet/chef steps**_
+_**5. Finish Deployment**_
+```bash
+
+ubuntu@raspberry:~$ ./deploy_done.bash
+
+```
+
+_**6. Additional Ansible/puppet/chef steps**_
 ```text
 Throught:
 * Disable Passwordauth
+* Run finish.bash on nodes
+* Add Ansible management User
+* Remove spinup User
 * Disable Root Login
 * Change Password
-
+* Some OS'es ships default user keep an eye on it
 
 ```
