@@ -9,8 +9,6 @@ fi
 
 
 read -p "Chosse Filedesign: [1] - sd_card-image, [2] - plain_rootfs: " filedesign
-
-echo
 read -p "want shell access to img? [y] - yes, [n] - no: " shellaccess
 
 
@@ -44,7 +42,7 @@ else
 fi
 
 if [ -f ".ssh/reverse_rsa.pub" ]; then
-    echo  Found RSA Publickey;
+    echo  Found Reverse RSA Publickey;
 else
     echo Generate remote sshkey
     ssh-keygen -f .ssh/reverse_rsa  -N ""
@@ -223,7 +221,7 @@ EOF
 echo Copy notifyer.service to Root fs
 sudo cp -f ~/notifyer.service ~/mnt/etc/systemd/system/notifyer.service
 sudo mkdir mnt/.ssh
-sudo cp -f ~/.ssh/reverse_rsa ~/mnt/root/.ssh/id_rsa
+sudo cp -f ~/.ssh/reverse_rsa ~/mnt/id_rsa
 
 echo Remove notifyer.service
 rm  ~/notifyer.service
@@ -307,7 +305,8 @@ useradd -m -s $(which bash) -p saurX9qN91.BQ -G sudo spinup
 mkdir -p /home/spinup/.ssh
 cat /id_rsa.pub > /home/spinup/.ssh/authorized_keys
 mv /modification.txt /home/spinup/modification.txt
-mv id_rsa.pub /root/.ssh/id_rsa
+mkdir /root/.ssh/
+mv /id_rsa /root/.ssh/id_rsa
 chmod 700 /root/.ssh/id_rsa
 chmod 700 /home/spinup/.ssh
 chmod 600 /home/spinup/.ssh/authorized_keys
