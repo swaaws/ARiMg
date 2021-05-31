@@ -259,6 +259,37 @@ Added File: /home/spinup/.ssh/authorized_keys
 Set Hostname: "pending-setup" > /etc/hostname
 Systemd Service Enabled: /etc/systemd/system/notifyer.service
 EOF
+echo Copy modification.txt to Root fs
+sudo cp -f ~/modification.txt ~/mnt/modification.txt
+rm  ~/modification.txt
+
+
+
+echo Create finish.bash
+cat <<'EOF' >> ~/modification.txt
+Add User: spinup (pw: spinup)
+Added Directory: /home/spinup/.ssh
+Added File: /netconfig
+Added File: /notifyer
+Added File: /home/spinup/modification.txt
+Added File: /home/spinup/.ssh/authorized_keys
+Set Hostname: "pending-setup" > /etc/hostname
+
+systemctl disable notifyer.service
+systemctl stop notifyer.service
+
+rm /netconfig /netconfig_data /notifyer /etc/systemd/system/notifyer.service /home/spinup/modification.txt
+
+EOF
+echo Copy modification.txt to Root fs
+sudo cp -f ~/modification.txt ~/mnt/modification.txt
+rm  ~/modification.txt
+
+
+
+
+
+
 myip=`ip addr | grep inet6 | grep global |  awk '{print $2}' | rev | cut -c4- | rev`
 myuser=`whoami`
 echo Create notifyer
@@ -268,21 +299,12 @@ echo "sleep 60;" >> ~/notifyer
 echo "/netconfig > /netconfig_data;" >> ~/notifyer
 echo "scp -o 'StrictHostKeyChecking no' -i /root/.ssh/id_rsa /netconfig_data $myuser@[$myip]:~/pending ;" >> ~/notifyer
 echo "done" >> ~/notifyer
-
-
-
-
-echo Copy modification.txt to Root fs
-sudo cp -f ~/modification.txt ~/mnt/modification.txt
-
 echo Copy modification.txt to Root fs
 sudo cp -f ~/notifyer ~/mnt/notifyer
-
-echo Remove modification.txt
-rm  ~/modification.txt
-
-echo Remove notifyer
 rm  ~/notifyer
+
+
+
 
 if [[  $filedesign == 1 ]]; then
     echo Chroot
