@@ -31,8 +31,8 @@ Your login looks like ssh spinup@[ip from ./deploy_cache.bash]
 # know the layout of your file: 1(Partition table) , 2(Compressed root)
 # 2 (ArchLinuxArm example)
 # want shell access befor finish: n/y
-./deploy_cache
-./deploy_done      <- !!!!Important!!!!
+./deploy_cache.bash
+./deploy_done.bash      <- !!!!Important!!!!
 ```
 _**Scroll down look at point 6. Additional Ansible/Puppet/Chef steps**_  
 
@@ -40,7 +40,8 @@ _**Scroll down look at point 6. Additional Ansible/Puppet/Chef steps**_
 * permit password login
 * automatic provision thought Ansible/Puppet/Chef
 * GPT support
-
+* Support ISO's with Preseed File \*-\*
+* one_file_fits_all: ./arimg {-s --start -i --ip -u --user -k --key -r --reversekey} {-c --cache -a --ansible -p --puppet -c -chef} {-d --done}
 
 ## Download Structure
 
@@ -148,19 +149,19 @@ Sector Size: 512
 Mountbit: 269484032
 Mount Image
 Mount Suxxxxxess
-Copy RSA to root fs
+Copy RSA to rootfs
 Create notifyer.service
-Copy notifyer.service to Root fs
+Copy notifyer.service to rootfs
 Remove notifyer.service
 Create netconfig
-Copy netconfig to Root fs
+Copy netconfig to rootfs
 Remove netconfig
 Create modification.txt
-Copy modification.txt to Root fs
+Copy modification.txt to rootfs
 Create finish.bash
-Copy finish.bash to Root fs
+Copy finish.bash to rootfs
 Create notifyer
-Copy modification.txt to Root fs
+Copy notifyer to rootfs
 Chroot
 useradd: user 'spinup' already exists
 Created symlink /etc/systemd/system/multi-user.target.wants/notifyer.service → /etc/systemd/system/notifyer.service.
@@ -214,5 +215,8 @@ Throught:
 * Disable Root Login
 * Change Password
 * Some OS'es ships default user keep an eye on it
+* expand fs
 
 ```
+_**7. Other**_
+You search for custom iso modification: Custom Ubuntu ISO Creator
