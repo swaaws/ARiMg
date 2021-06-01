@@ -1,9 +1,7 @@
 #!/bin/bash
-#https://www.pugetsystems.com/labs/hpc/Note-Auto-Install-Ubuntu-with-Custom-Preseed-ISO-1654/ iso's ^:/
-programname=$0
 
 if test "$#" -ne 1; then
-    echo "usage: $programname ubuntu-21.04-preinstalled-server-arm64+raspi.img.xz"
+    echo "usage: $0 ubuntu-21.04-preinstalled-server-arm64+raspi.img.xz"
     exit
 fi
 
@@ -11,37 +9,37 @@ read -p "Choose File Design: [1] - sd_card-image, [2] - plain_rootfs: " filedesi
 read -p "want shell access to img? [y] - yes, [n] - no: " shellaccess
 
 compression=`file $1 | awk '{print $2}'`
-echo get file info
-echo shasum: `shasum $1 | awk '{print $1}'`
-echo File: $1
-echo Compression detected: $compression
+echo "get file info"
+echo "shasum: `shasum $1 | awk '{print $1}'`"
+echo "File: $1"
+echo "Compression detected: $compression"
 
 if [ -d ~/mnt ]; then
-    echo Remove mnt
+    echo "Remove mnt"
     sudo umount mnt/boot
     sudo umount mnt
     sudo rm -rf ~/mnt
 fi
 
 if [ -f ~/spinup.img ]; then
-    echo Removed spinup.img
+    echo "Removed spinup.img"
     sudo rm -rf ~/spinup.img
 fi
 
 
 if [ -f ".ssh/id_rsa.pub" ]; then
-    echo  Found RSA Publickey;
+    echo  "Found RSA Publickey"
 else
-    echo Please run ssh-keygen
+    echo "Please run ssh-keygen"
     exit 1
     # echo Generate RSA;
     # ssh-keygen -q -N "";
 fi
 
 if [ -f ".ssh/reverse_rsa.pub" ]; then
-    echo  Found Reverse RSA Publickey;
+    echo  "Found Reverse RSA Publickey"
 else
-    echo Generate remote sshkey
+    echo "Generate remote sshkey"
     ssh-keygen -f .ssh/reverse_rsa  -N ""
 
 fi
@@ -53,37 +51,37 @@ if [[  $filedesign == 1 ]]; then
     case $compression in
 
         Zip)
-            echo Decompress Zip
+            echo "Decompress Zip"
             unzip $1 -d ~/temp
             mv ~/temp/*.img ~/spinup.img
             rm -rf temp
             ;;
 
         XZ)
-            echo Create Duplicate
+            echo "Create duplicate"
             cp $1 ~/spinup.img.xz
 
-            echo Decompress xz
+            echo "Decompress xz"
             xz --decompress ~/spinup.img.xz
             ;;
 
         *)
-            echo unknown compression: $compression
-            echo Open a issue with shell output: https://github.com/swaaws/ARiMg/issues/new
+            echo "unknown compression: $compression"
+            echo "Open a issue with shell output: https://github.com/swaaws/ARiMg/issues/new"
             exit 1
             ;;
     esac
 
-    echo Create Mountpoint
+    echo "Create mountpoint"
     mkdir ~/mnt
     startbit=`fdisk -l ~/spinup.img -o start,id,type | grep "83 Linux" | awk '{print $1}'`
 
-    echo Start bit for root: $startbit
+    echo "Start bit for root: $startbit"
     sectorsize1=`fdisk -l ~/spinup.img | grep "I/O size" | awk '{print $4}'`
 
-    echo Sector Size: $sectorsize1
-    echo Mountbit: $(($startbit*$sectorsize1))
-    echo Mount Image
+    echo "Sector Size: $sectorsize1"
+    echo "Mountbit: $(($startbit*$sectorsize1))"
+    echo "Mount Image"
     sudo mount -o loop,offset=$(($startbit*$sectorsize1)) ~/spinup.img ~/mnt
 
 fi
@@ -91,63 +89,63 @@ fi
 
 #plain_rootfs
 if [[  $filedesign == 2 ]]; then
-    echo Create mountpoint
+    echo "Create mountpoint"
     mkdir ~/mnt
 
-    echo Create spinup.img
+    echo "Create spinup.img"
     sudo dd of=~/spinup.img seek=3900M bs=1 count=0 status=none
 
-    echo Create patition table
+    echo "Create patition table"
     sudo parted ~/spinup.img mktable msdos
 
-    echo Create boot patition
+    echo "Create boot patition"
     sudo parted ~/spinup.img mkpart primary fat32 2048s 257MiB
 
-    echo Create root patition
+    echo "Create root patition"
     sudo parted ~/spinup.img mkpart primary ext4 257MiB 100%
 
-    echo Attach spinup.img to loop device
+    echo "Attach spinup.img to loop device"
     loop=`sudo losetup --find --partscan --show spinup.img`
 
-    echo Create vfat on boot patition
+    echo "Create vfat on boot patition"
     sudo mkfs.vfat -F 32 -n BOOT "${loop}p1" > /dev/null
 
-    echo Create ext4 on root partition
+    echo "Create ext4 on root partition"
     sudo mkfs.ext4 -L rootfs "${loop}p2" | grep ,
 
-    echo Mount root patition
+    echo "Mount root patition"
     sudo mount "${loop}p2" ~/mnt/
 
-    echo Mount boot patition
+    echo "Mount boot patition"
     sudo mkdir ~/mnt/boot
     sudo mount "${loop}p1" ~/mnt/boot
     case $compression in
 
         Zip)
             exit 1
-            echo Decompress Zip \(needs time...\)
+            echo "Decompress Zip \(needs time...\)"
             unzip $1 -d ~/mnt
             ;;
 
         XZ)
             exit 1
-            echo Decompress the file \(needs time...\)
+            echo "Decompress the file \(needs time...\)"
             xz --decompress $1 ~/mnt
             ;;
 
         gzip)
 
-            echo Decompress the file \(needs time...\)
+            echo "Decompress the file \(needs time...\)"
             sudo bsdtar -xpf ~/$1 -C ~/mnt
             ;;
 
         *)
-            echo unknown compression: $compression
+            echo "unknown compression: $compression"
             sudo umount mnt/boot
             sudo umount mnt
             sudo rm -rf ~/mnt
             sudo rm -rf ~/spinup.img
-            echo Open a issue with shell output: https://github.com/swaaws/ARiMg/issues/new
+            echo "Open a issue with shell output: https://github.com/swaaws/ARiMg/issues/new"
 
             exit 1
             ;;
@@ -156,22 +154,24 @@ if [[  $filedesign == 2 ]]; then
 fi
 
 if [ -d ~/mnt/etc/ ]; then
-    echo "Mount Suxxxxxess"
+    echo "Mount success"
 else
-    echo unmount mnt
+    echo "Unmount mnt"
     sudo umount ~/mnt
 
-    echo Remove Mountpoint
+    echo "Remove mountpoint"
     sudo rm -rf ~/mnt
 
     echo "Error: Mount failed.  Can't continue."
+    echo "Open a issue with shell output: https://github.com/swaaws/ARiMg/issues/new"
+
     exit 1
 fi
 
-echo Copy RSA to root fs
+echo "Copy RSA to rootfs"
 sudo cp ~/.ssh/id_rsa.pub ~/mnt/id_rsa.pub
 
-echo Create notifyer.service
+echo "Create notifyer.service"
 cat <<'EOF' >> ~/notifyer.service
 [Unit]
 Description=Multicast notifyer
@@ -183,15 +183,13 @@ ExecStart=/notifyer
 WantedBy=multi-user.target
 EOF
 
-echo Copy notifyer.service to Root fs
+echo "Copy notifyer.service to rootfs"
 sudo cp -f ~/notifyer.service ~/mnt/etc/systemd/system/notifyer.service
 sudo mkdir mnt/.ssh
 sudo cp -f ~/.ssh/reverse_rsa ~/mnt/id_rsa
-
-echo Remove notifyer.service
 rm  ~/notifyer.service
 
-echo Create netconfig
+echo "Create netconfig"
 cat <<'EOF' >> ~/netconfig
 #!/bin/bash
 interface=`ip -o -6 route show to default | awk '{print $5}'`
@@ -203,13 +201,13 @@ echo hostname: `hostname` gateway: `ip -o -6 route show to default \
 | awk '{print $2}'` failed: `systemctl status | grep "  Failed: " | awk '{print $2}'` units
 EOF
 
-echo Copy netconfig to rootfs
+echo "Copy netconfig to rootfs"
 sudo cp -f ~/netconfig ~/mnt/
 
-echo Remove netconfig
+echo "Remove netconfig"
 rm  ~/netconfig
 
-echo Create modification.txt
+echo "Create modification.txt"
 cat <<'EOF' >> ~/modification.txt
 Add User: spinup (pw: spinup)
 Added Directory: /home/spinup/.ssh
@@ -222,11 +220,11 @@ Added File: /home/spinup/.ssh/authorized_keys
 Set Hostname: "pending-setup" > /etc/hostname
 Systemd Service Enabled: /etc/systemd/system/notifyer.service
 EOF
-echo Copy modification.txt to rootfs
+echo "Copy modification.txt to rootfs"
 sudo cp -f ~/modification.txt ~/mnt/modification.txt
 rm  ~/modification.txt
 
-echo Create finish.bash
+echo "Create finish.bash"
 cat <<'EOF' >> ~/finish.bash
 systemctl disable notifyer.service
 systemctl stop notifyer.service
@@ -234,24 +232,24 @@ rm /netconfig /netconfig_data /notifyer /etc/systemd/system/notifyer.service /ho
 echo "finished-setup" > /etc/hostname
 rm finish.bash
 EOF
-echo Copy finish.bash to rootfs
+echo "Copy finish.bash to rootfs"
 sudo cp -f ~/finish.bash ~/mnt/finish.bash
 rm  ~/finish.bash
 
 myip=`ip addr | grep inet6 | grep global |  awk '{print $2}' | rev | cut -c4- | rev`
 myuser=`whoami`
-echo Create notifyer
+echo "Create notifyer"
 echo "#!/bin/bash" > ~/notifyer
 echo "while true; do" >> ~/notifyer
 echo "sleep 60;" >> ~/notifyer
 echo "/netconfig > /netconfig_data;" >> ~/notifyer
 echo "scp -o 'StrictHostKeyChecking no' -i /root/.ssh/id_rsa /netconfig_data $myuser@[$myip]:~/pending ;" >> ~/notifyer
 echo "done" >> ~/notifyer
-echo Copy modification.txt to Root fs
+echo "Copy notifyer to rootfs"
 sudo cp -f ~/notifyer ~/mnt/notifyer
 rm  ~/notifyer
 
-echo Chroot
+echo "Chroot"
 #perl -e 'print crypt("spinup", "salt"),"\n"'
 sudo chroot ~/mnt/ /bin/bash << "EOT"
 useradd -m -s $(which bash) -p saurX9qN91.BQ -G sudo spinup
@@ -273,27 +271,27 @@ systemctl enable notifyer.service
 EOT
 
 if [[  $shellaccess == y ]]; then
-echo interactive shell! CTRL-d if done
+echo "interactive shell! CTRL-d if done"
 bash -c "sudo chroot ~/mnt/"
 fi
 
 if [[  $filedesign == 2 ]]; then
-echo Detach loop
+echo "Detach loop"
 sudo losetup --detach-all
 sudo losetup -d `losetup -a | grep spinup.img | awk -F ":" '{print $1}'`
-echo Unmount mnt / boot
+echo "Unmount mnt/boot"
 sudo umount ~/mnt/boot
 fi
 
-echo Unmount Image
+echo "Unmount image"
 sudo umount ~/mnt
 
-echo Remove Mountpoint
+echo "Remove mountpoint"
 sudo rm -rf ~/mnt
 
 if [ -f ~/$1-spinup.img ]; then
   if [ -f ~/$1-spinup.img.old ]; then
-    echo Removed $1-spinup.img.old
+    echo "Removed $1-spinup.img.old"
     sudo rm -rf ~/$1-spinup.img.old
   fi
 mv $1-spinup.img $1-spinup.img.old
@@ -301,4 +299,4 @@ fi
 mv spinup.img $1-spinup.img
 
 echo -e "\e[32mFinished, $1-spinup.img created\e[0m"
-echo Run ./deploy_cache.bash
+echo "Run ./deploy_cache.bash"
