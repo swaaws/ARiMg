@@ -3,17 +3,17 @@
     <img src="logo.svg" width="400">
 </p>
 
-# 🙏 Welcome to ARiMg 🙏
+# 🙏Welcome to ARiMg🙏
 
 ## 🧐 What's ARiMg? 🧐
 
 AR' iM' g'  is a helper that includes everything* needed to
 modify SD Card Images according to the [Acorn RISC Machine (ARM)](https://en.wikipedia.org/wiki/ARM_architecture) Platform.
-*dependencys not included
+*dependencies not included
 
 
 ## 📓 Preamble 📓
-In cases you need to setup many arm (raspberry like) hosts.
+In some case you need to setup many arm (raspberry like) hosts.
 You get an img from the Website and flashing it with _**dd**_ to the sd card
 you plug network, keyboard, mouse, display and power. All fine?
 Then you don't need this tool.
