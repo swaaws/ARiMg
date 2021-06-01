@@ -14,7 +14,7 @@ modify SD Card Images according to the [Acorn RISC Machine (ARM)](https://en.wik
 
 ## 📓 Preamble 📓
 In some case you need to setup many arm (raspberry like) hosts.
-You get an img from the Website and flashing it with _**dd**_ to the sd card
+You get an image from the Website and flash it with _**dd**_ to the sd card
 you plug network, keyboard, mouse, display and power. All fine?
 Then you don't need this tool.
 But what is if you don't have a keyboard, mouse and display because of idleness?
