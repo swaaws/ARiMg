@@ -253,7 +253,9 @@ echo "Chroot"
 #perl -e 'print crypt("spinup", "salt"),"\n"'
 sudo chroot ~/mnt/ /bin/bash << "EOT"
 useradd -m -s $(which bash) -p saurX9qN91.BQ -G sudo spinup
+if [[  $? == 1 ]]; then
 useradd -m -s $(which bash) -p saurX9qN91.BQ spinup
+fi
 mkdir -p /home/spinup/.ssh
 cat /id_rsa.pub > /home/spinup/.ssh/authorized_keys
 mv /modification.txt /home/spinup/modification.txt
