@@ -32,8 +32,7 @@ usage: arimg [-apc] [-i|--ip 127.0.0.2]
              [-r|--reversekey .ssh/reversekey_rsa] [-o|--output deploy.img] input
 
 ./arimg ArchLinuxARM-rpi-2-latest.tar.gz
-# know the layout of your file: 1(Partition table) , 2(Compressed root)
-# 2 (ArchLinuxArm example)
+# know the layout of your file: 1(Partition table) , 2(Compressed root): 2 (ArchLinuxArm example)
 # want shell access befor finish: n/y
 
 ```
