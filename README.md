@@ -7,9 +7,8 @@
 
 ## 🧐 What's ARiMg? 🧐
 
-AR' iM' g'  is a helper that includes everything* needed to
-modify SD Card Images according to the [Acorn RISC Machine (ARM)](https://en.wikipedia.org/wiki/ARM_architecture) Platform.
-*dependencies not included
+AR' iM' g'  is a helper to modify SD Card Images according to the [Acorn RISC Machine (ARM)](https://en.wikipedia.org/wiki/ARM_architecture) Platform.
+
 
 
 ## 📓 Preamble 📓
@@ -27,12 +26,14 @@ Your login looks like ssh spinup@[ip from ./deploy_cache.bash]
 
 ## ⚡️ For the fast ones ⚡️
 ```bash
-./deploy_start.bash ArchLinuxARM-rpi-2-latest.tar.gz
+./arimg ArchLinuxARM-rpi-2-latest.tar.gz
 # know the layout of your file: 1(Partition table) , 2(Compressed root)
 # 2 (ArchLinuxArm example)
 # want shell access befor finish: n/y
-./deploy_cache.bash
-./deploy_done.bash      <- !!!!Important!!!!
+usage: arimg [-apc] [-i|--ip 127.0.0.2]
+             [-u|--user spinup] [-k|--key .ssh/id_rsa]
+             [-r|--reversekey .ssh/reversekey_rsa] [-o|--output deploy.img] input
+
 ```
 _**Scroll down look at point 6. Additional Ansible/Puppet/Chef steps**_  
 
@@ -41,7 +42,7 @@ _**Scroll down look at point 6. Additional Ansible/Puppet/Chef steps**_
 * automatic provision thought Ansible/Puppet/Chef
 * GPT support
 * Support ISO's with Preseed File \*-\*
-* one_file_fits_all: ./arimg {-s --start -i --ip -u --user -k --key -r --reversekey} {-c --cache -a --ansible -p --puppet -c -chef} {-d --done}
+
 
 ## Download Structure
 
@@ -87,8 +88,9 @@ _**SD Card Img**_
 ```
 
 _**Plain Root Directory**_
-.rootfs.(Flavour Compression)
+
 ```text
+someDistro.rootfs
 /
  | bin
  | dev
@@ -113,6 +115,38 @@ _**Raspbian armhf**_
 _**ArchLinuxARM**_
 - `4f0fe7bc9944ca244c3f719da46386200d94a253` rpi-2 (RPI 3) latest
 
+
+
+## Manpage
+```manpage
+NAME
+      arimg - modify operating system images
+
+SYNOPSIS
+      arimg [-apc] [-i|--ip 127.0.0.2]
+            [-u|--user spinup] [-k|--key .ssh/id_rsa]
+            [-r|--reversekey .ssh/reversekey_rsa] [-o|--output deploy.img] input
+
+DESCRIPTION
+      arimg is a helper to modify SD Card Images
+            according to the ARM Platform.
+
+      The options are:
+      -i    Specify the ip where the deploy host conect over ssh.
+            (Default the host ipv6 address where arimg has build the image)
+
+      -u    Specify the user where the deploy host conect over ssh.
+            (Current user where arimg has build the image)
+
+      -k    Specify a file which used to provide an rsa key for user spinup.
+            (The default is ~/.ssh/id_rsa).
+
+      -r    Specify a file which used to allow conent to the deploy host.
+            (The default is ~/.ssh/reverse_rsa).
+
+      -o    name the resulting image
+            (default [imputname]-deploy.img)
+```
 
 
 ## 🏁 Getting Started 🏁
@@ -188,13 +222,11 @@ Finished, ubuntu-21.04-preinstalled-server-arm64+raspi.img.xz-spinup.img created
 ```
 _**4. Cache Hosts**_
 ```bash
-# Username: spinup
-# Password: spinup
-ubuntu@raspberry:~$ ./deploy_cache.bash
-Hosts in File: 3
 hostname: pending-setup gateway: 2001:DB8::/32 global6: 2001:DB8::1/32 link-local: fe80:DB8::/32 mac_addr: ff:ff:ff:ff:ff:ff status: running failed: 0 units
 hostname: pending-setup gateway: 2001:DB8::/32 global6: 2001:DB8::2/32 link-local: fe80:DB8::/32 mac_addr: ff:ff:ff:ff:ff:ff status: running failed: 0 units
 hostname: pending-setup gateway: 2001:DB8::/32 global6: 2001:DB8::3/32 link-local: fe80:DB8::/32 mac_addr: ff:ff:ff:ff:ff:ff status: running failed: 0 units
+Hosts in File: 3
+Press [q] if all the count matches to your Deployment
 ...
 ```
 
@@ -202,7 +234,7 @@ _**5. Finish Deployment**_
 ```bash
 # This Step is important because simple password -> ssh key to your deployment host
 ubuntu@raspberry:~$ ./deploy_done.bash
-
+ubuntu@raspberry:~$
 ```
 
 _**6. Additional Ansible/Puppet/Chef steps**_
