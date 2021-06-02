@@ -252,4 +252,6 @@ Throught:
 
 ```
 _**7. Other**_
-You search for custom iso modification: Custom Ubuntu ISO Creator
+You search for custom iso/img creation: 
+* CUBIC - Custom Ubuntu ISO Creator
+* Genimage - The Image Creation Tool
