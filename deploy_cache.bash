@@ -1,7 +1,7 @@
 #!/bin/bash
 clear
-echo Hosts in File: `wc -l pending_store | awk '{print $1}'`
 cat pending_store
+echo Hosts in File: `wc -l pending_store | awk '{print $1}'`
 
 while true; do
 
@@ -10,8 +10,8 @@ while true; do
     sort ~/pending_store > ~/pending_store.tmp
     uniq  ~/pending_store.tmp ~/pending_store.now
     clear
-    echo Hosts in File: `wc -l pending_store.now | awk '{print $1}'`
     cat pending_store.now
+    echo Hosts in File: `wc -l pending_store.now | awk '{print $1}'`
     rm ~/pending
     cp ~/pending_store.now ~/pending_store
     rm ~/pending_store.tmp
