@@ -25,14 +25,15 @@ ansible=n
 puppet=n
 chef=n
 output=-
+interface=$(ip -o -6 route show to default | awk '{print $5}')
 while true; do
     case "$1" in
         -h|--help)
-            echo "
-usage: arimg [-apc] [-i|--ip 127.0.0.2]
-                    [-u|--user spinup] [-k|--key .ssh/id_rsa]
-                    [-r|--reversekey .ssh/reversekey_rsa]
-                    [-o|--output deploy.img] input"
+            echo "usage: arimg [-apc] 
+                    [-i|—-ip $(ip addr show $interface | grep global | grep inet6 | awk ‘{print $2}’)]
+                    [-u|--user $(whoami)] [-k|-—key .ssh/id_rsa]
+                    [-r|—-reversekey .ssh/reversekey_rsa]
+                    [-o|—-output deploy.img] input"
             exit 1
             ;;
         -i|--ip)
