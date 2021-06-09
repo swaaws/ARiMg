@@ -3,6 +3,10 @@ clear
 cat ~/pending_store | awk '{print $10}'
 echo ----------------
 echo Hosts in File: `grep -o -i "hostname:" ~/pending_store | wc -l`
+echo Press [a] generate ansible host inventory.
+echo Press [p] generate puppet host inventory.
+echo Press [c] generate chef host inventory.
+echo Press [n] clear file.
 echo Press [q] when the number of hosts is correct.
 loop=true
 while $loop; do
@@ -16,6 +20,10 @@ while $loop; do
       cat ~/pending_store | awk '{print $10}'
       echo ----------------
       echo Hosts in File: `grep -o -i "hostname:" ~/pending_store | wc -l`
+      echo Press [a] generate ansible host inventory.
+      echo Press [p] generate puppet host inventory.
+      echo Press [c] generate chef host inventory.
+      echo Press [n] clear file.
       echo Press [q] when the number of hosts is correct.
       rm ~/pending
       rm ~/pending_store.tmp
@@ -28,6 +36,7 @@ while $loop; do
             a) trapKey=ansible    ;;
             p) trapKey=puppet  ;;
             c) trapKey=chef ;;
+            n) trapKey=dropfile ;;
             q | $'\E') loop=false  ;;
         esac
     fi
@@ -46,6 +55,20 @@ while $loop; do
 
             chef)
                 echo "chef"
+                ;;
+
+            dropfile)
+                clear
+                echo "file droped"
+                echo > ~/pending_store
+                cat ~/pending_store | awk '{print $10}'
+                echo ----------------
+                echo Hosts in File: `grep -o -i "hostname:" ~/pending_store | wc -l`
+                echo Press [a] generate ansible host inventory.
+                echo Press [p] generate puppet host inventory.
+                echo Press [c] generate chef host inventory.
+                echo Press [n] clear file.
+                echo Press [q] when the number of hosts is correct.
                 ;;
         esac
   fi
