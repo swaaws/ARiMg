@@ -10,8 +10,6 @@
   - name: Disable password login
     become: true
     lineinfile: dest=/etc/ssh/sshd_config regexp="^PasswordAuthentication" line="PasswordAuthentication no" state=present
-    notify:
-      - restart sshd
 
   - name: Gruppe "ansible" anlegen
     become: true
@@ -75,7 +73,7 @@
     file:
       path: /finish.bash
       state: absent
-      
+
   - name: Reboot host
     shell: sleep 2 && /sbin/shutdown -r now "Ansible reboot"
     async: 1
