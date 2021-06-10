@@ -110,7 +110,8 @@ function catch {
 }
 function donersa {
 echo remove ssh access
-echo "$(grep -v "`cat ~/.ssh/reverse_rsa.pub`" ~/.ssh/authorized_keys)" > ~/.ssh/authorized_keys
+echo "$(grep -v "`cat ~/.ssh/reverse_rsa.pub`" ~/.ssh/authorized_keys)" > ~/.ssh/authorized_keys1
+mv ~/.ssh/authorized_keys1 ~/.ssh/authorized_keys
 echo run finish.bash as root on each host
 }
 
@@ -257,7 +258,8 @@ else
     ssh-keygen -f ~/.ssh/reverse_rsa  -N ""
 
 fi
-echo "$(grep -v "`cat ~/.ssh/reverse_rsa.pub`" ~/.ssh/authorized_keys)" > ~/.ssh/authorized_keys
+echo "$(grep -v "`cat ~/.ssh/reverse_rsa.pub`" ~/.ssh/authorized_keys)" > ~/.ssh/authorized_keys1
+mv ~/.ssh/authorized_keys1 ~/.ssh/authorized_keys
 cat ~/.ssh/reverse_rsa.pub >> ~/.ssh/authorized_keys
 
 #sd_card-image
