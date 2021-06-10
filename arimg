@@ -94,7 +94,8 @@ function catch {
               dropfile)
                   clear
                   echo "file droped"
-                  echo > ~/pending_store
+                  rm ~/pending_store
+                  touch ~/pending_store 
                   cat ~/pending_store | awk '{print $10}'
                   echo ----------------
                   echo Hosts in File: `grep -o -i "hostname:" ~/pending_store | wc -l`
