@@ -36,25 +36,48 @@ while $loop; do
             a) trapKey=ansible    ;;
             p) trapKey=puppet  ;;
             c) trapKey=chef ;;
+            h) trapKey=hosts ;;
             n) trapKey=dropfile ;;
             q | $'\E') loop=false  ;;
         esac
     fi
     if [ "$trapKey" ]; then
         case $trapKey in
+          hosts)
+              echo "Create Hostsfile"
+              while read p; do
+                  echo "$p" | awk '{print $10, $6}' | rev | cut -c4- | rev >>  tmp.hosts
+              done <~/pending_store
+
+              mv tmp.hosts pending.hosts
+              echo "pending.hosts Created"
+              ;;
 
             ansible)
-                echo "ansible"
+                echo "Create ansible inventory"
+                echo > pending.ansible.inv
+
+                echo
+                while read p; do
+                    echo "$p" | awk '{print "["$10"]"}' | sed 's/://g' >> pending.ansible.inv
+                    echo "$p" | awk '{print $6}' | rev | cut -c4- | rev  >> pending.ansible.inv
+                    echo "" >> pending.ansible.inv
+                done <~/pending_store
+                ansible-inventory -i pending.ansible.inv --list -y > pending.ansible.yaml
+                rm pending.ansible.inv
+                echo "pending.ansible.yaml Created"
+                echo "ansible-playbook ansible/01_spinup.yml -i pending.ansible.yaml"
+
 
                 ;;
 
             puppet)
-                echo "puppet"
+                echo ""
 
                 ;;
 
             chef)
-                echo "chef"
+                echo ""
                 ;;
 
             dropfile)
