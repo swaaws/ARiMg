@@ -274,6 +274,7 @@ rm /id_rsa.pub
 echo "pending-setup" > /etc/hostname
 chmod +x /notifyer
 chmod +x /netconfig
+chmod +x /finish.bash
 systemctl enable notifyer.service
 EOT
 
