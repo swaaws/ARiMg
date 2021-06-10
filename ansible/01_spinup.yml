@@ -72,6 +72,7 @@
     command: /finish.bash
     become: true
 
-  - name: Stop service notifyer, if started:
-    name: notifyer
-    state: stopped
+  - name: Stop service notifyer, if started
+      ansible.builtin.service:
+        name: notifyer
+        state: stopped
