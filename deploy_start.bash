@@ -226,6 +226,7 @@ rm  ~/modification.txt
 
 echo "Create finish.bash"
 cat <<'EOF' >> ~/finish.bash
+#!/bin/bash
 systemctl disable notifyer.service
 systemctl stop notifyer.service
 rm /netconfig /netconfig_data /notifyer /etc/systemd/system/notifyer.service /home/spinup/modification.txt
