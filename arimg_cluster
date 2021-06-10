@@ -8,8 +8,8 @@ if [[ ${PIPESTATUS[0]} -ne 4 ]]; then
     exit 1
 fi
 
-OPTIONS=i:u:k:r:o:h
-LONGOPTS=ip:,user:,key:,reversekey:,output:,help
+OPTIONS=i:u:k:r:o:apch
+LONGOPTS=ip:,user:,key:,reversekey:,output:,ansible,puppet,chef,help
 
 ! PARSED=$(getopt --options=$OPTIONS --longoptions=$LONGOPTS --name "$0" -- "$@")
 if [[ ${PIPESTATUS[0]} -ne 0 ]]; then
@@ -21,12 +21,15 @@ ip=n
 user=n
 key=n
 reversekey=n
+ansible=n
+puppet=n
+chef=n
 output=-
 interface=$(ip -o -6 route show to default | awk '{print $5}')
 while true; do
     case "$1" in
         -h|--help)
-            echo "usage: arimg [-apc]
+            echo "usage: arimg [-apc] 
                     [-i|—-ip $(ip addr show $interface | grep global | grep inet6 | awk ‘{print $2}’)]
                     [-u|--user $(whoami)] [-k|-—key .ssh/id_rsa]
                     [-r|—-reversekey .ssh/reversekey_rsa]
@@ -48,6 +51,18 @@ while true; do
         -r|--reversekey)
             reversekey="$2"
             shift 2
+            ;;
+        -a|--ansible)
+            ansible=y
+            shift
+            ;;
+        -p|--puppet)
+            puppet=y
+            shift
+            ;;
+        -c|--chef)
+            chef=y
+            shift
             ;;
         -o|--output)
             output="$2"
@@ -76,4 +91,4 @@ fi
 
 
 
-echo " IP: $ip, User: $user, RSA Key: $key, Signal Key: $reversekey, Out: $output"
+echo " IP: $ip, User: $user, RSA Key: $key, Signal Key: $reversekey, Ansible: $ansible, Puppet: $puppet, Chef: $chef, Out: $output"
