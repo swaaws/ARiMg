@@ -16,8 +16,8 @@ echo "Compression detected: $compression"
 
 if [ -d ~/mnt ]; then
     echo "Remove mnt"
-    sudo umount mnt/boot
-    sudo umount mnt
+    sudo umount ~/mnt/boot
+    sudo umount ~/mnt
     sudo rm -rf ~/mnt
 fi
 
@@ -27,7 +27,7 @@ if [ -f ~/spinup.img ]; then
 fi
 
 
-if [ -f ".ssh/id_rsa.pub" ]; then
+if [ -f "~/.ssh/id_rsa.pub" ]; then
     echo  "Found RSA Publickey"
 else
     echo "Please run ssh-keygen"
@@ -36,11 +36,11 @@ else
     # ssh-keygen -q -N "";
 fi
 
-if [ -f ".ssh/reverse_rsa.pub" ]; then
+if [ -f "~/.ssh/reverse_rsa.pub" ]; then
     echo  "Found Reverse RSA Publickey"
 else
     echo "Generate remote sshkey"
-    ssh-keygen -f .ssh/reverse_rsa  -N ""
+    ssh-keygen -f ~/.ssh/reverse_rsa  -N ""
 
 fi
 echo "$(grep -v "`cat ~/.ssh/reverse_rsa.pub`" ~/.ssh/authorized_keys)" > ~/.ssh/authorized_keys
