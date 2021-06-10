@@ -1,4 +1,7 @@
 #!/bin/bash
+cd ~/`dirname "$0"`
+scriptroot=`pwd`
+cd ~/
 clear
 cat ~/pending_store | awk '{print $10}'
 echo ----------------
@@ -54,21 +57,21 @@ while $loop; do
               echo "pending.hosts Created"
               ;;
 
-            ansible)
-                echo "Create ansible inventory"
-                echo > ~/pending.ansible.inv
+          ansible)
+              echo "Create ansible inventory"
+              echo > ~/pending.ansible.inv
 
-                echo
-                while read p; do
-                    echo "$p" | awk '{print "["$10"]"}' | sed 's/://g' >> ~/pending.ansible.inv
-                    echo "$p" | awk '{print $6}' | rev | cut -c4- | rev  >> ~/pending.ansible.inv
-                    echo "" >> ~/pending.ansible.inv
-                done <~/pending_store
-                ansible-inventory -i ~/pending.ansible.inv --list -y > ~/pending.ansible.yaml
-                rm ~/pending.ansible.inv
-                echo "pending.ansible.yaml Created"
-                echo "ansible-playbook ansible/01_spinup.yml -i ~/pending.ansible.yaml"
-
+              echo
+              while read p; do
+                  echo "$p" | awk '{print "["$10"]"}' | sed 's/://g' >> ~/pending.ansible.inv
+                  echo "$p" | awk '{print $6}' | rev | cut -c4- | rev  >> ~/pending.ansible.inv
+                  echo "" >> ~/pending.ansible.inv
+              done <~/pending_store
+              ansible-inventory -i ~/pending.ansible.inv --list -y > ~/pending.ansible.yaml
+              rm ~/pending.ansible.inv
+              echo "pending.ansible.yaml Created"
+              echo "ansible-playbook -i ~/pending.ansible.yaml $scriptroot/ansible/01_spinup.yml"
+              echo "ansible-playbook -i ~/pending.ansible.yaml $scriptroot/ansible/02_apt_upgrade.yml"
 
                 ;;
 
