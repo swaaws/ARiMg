@@ -1,5 +1,5 @@
 #!/bin/bash
-
+cd ~/ 
 if test "$#" -ne 1; then
     echo "usage: $0 ubuntu-21.04-preinstalled-server-arm64+raspi.img.xz"
     exit
@@ -54,7 +54,7 @@ if [[  $filedesign == 1 ]]; then
             echo "Decompress Zip"
             unzip $1 -d ~/temp
             mv ~/temp/*.img ~/spinup.img
-            rm -rf temp
+            rm -rf ~/temp
             ;;
 
         XZ)
