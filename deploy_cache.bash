@@ -72,7 +72,7 @@ while $loop; do
               echo "pending.ansible.yaml Created"
               echo "ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook -i ~/pending.ansible.yaml $scriptroot/ansible/01_spinup.yml"
               echo "ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook -i ~/pending.ansible.yaml $scriptroot/ansible/02_apt_upgrade.yml"
-
+              echo "ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook -i ~/pending.ansible.yaml $scriptroot/ansible/03_finish.yml"
                 ;;
 
             puppet)

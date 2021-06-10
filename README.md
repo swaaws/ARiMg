@@ -27,7 +27,7 @@ Your login looks like ssh spinup@[ip from ./deploy_cache.bash]
 ## ⚡️ For the fast ones ⚡️
 ```bash
 ./arimg -h
-usage: arimg [-apc] [-i|--ip 127.0.0.2]
+usage: arimg [-cd] [-i|--ip 127.0.0.2]
              [-u|--user spinup] [-k|--key .ssh/id_rsa]
              [-r|--reversekey .ssh/reversekey_rsa] [-o|--output deploy.img] input
 
@@ -35,7 +35,19 @@ usage: arimg [-apc] [-i|--ip 127.0.0.2]
 # know the layout of your file: 1(Partition table) , 2(Compressed root): 2 (ArchLinuxArm example)
 # want shell access befor finish: n/y
 
+./arimg -c # Catch hosts from network
+----------------
+Hosts in File: 0
+Press [a] generate ansible host inventory.
+Press [p] generate puppet host inventory.
+Press [c] generate chef host inventory.
+Press [n] clear file.
+Press [q] when the number of hosts is correct.
+
+./arimg -d # Done
+Deploy done... RSA Reverse Access Removed
 ```
+
 _**Scroll down look at point 6. Additional Ansible/Puppet/Chef steps**_  
 
 ## 📖 What's open 📖
@@ -252,6 +264,6 @@ Throught:
 
 ```
 _**7. Other**_
-You search for custom iso/img creation: 
+You search for custom iso/img creation:
 * CUBIC - Custom Ubuntu ISO Creator
 * Genimage - The Image Creation Tool
