@@ -68,9 +68,11 @@
       name: ubuntu
       state: absent
 
+  - name: Stop service notifyer, if started
+    ansible.builtin.service:
+    name: notifyer
+    state: stopped
 
-  handlers:
-  - name: restart sshd
-    service:
-      name: sshd
-      state: restarted
+  - name: Run Finish.bash
+    command: /finish.bash
+    become: true
