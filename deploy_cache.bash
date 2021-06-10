@@ -16,7 +16,7 @@ while $loop; do
       sort ~/pending_store > ~/pending_store.tmp
       uniq  ~/pending_store.tmp ~/pending_store.now
       mv ~/pending_store.now ~/pending_store
-      sed -i '/^$/d' pending_store
+      sed -i '/^$/d' ~/pending_store
       clear
       cat ~/pending_store | awk '{print $10}'
       echo ----------------
@@ -47,7 +47,7 @@ while $loop; do
           hosts)
               echo "Create Hostsfile"
               while read p; do
-                  echo "$p" | awk '{print $10, $6}' | rev | cut -c4- | rev >>  ~/tmp.hosts
+                  echo "$p" | awk '{print $6, $10}' | rev | cut -c4- | rev >>  ~/tmp.hosts
               done <~/pending_store
 
               mv ~/tmp.hosts ~/pending.hosts
@@ -67,7 +67,7 @@ while $loop; do
                 ansible-inventory -i ~/pending.ansible.inv --list -y > ~/pending.ansible.yaml
                 rm ~/pending.ansible.inv
                 echo "pending.ansible.yaml Created"
-                echo "ansible-playbook ansible/01_spinup.yml -i pending.ansible.yaml"
+                echo "ansible-playbook ansible/01_spinup.yml -i ~/pending.ansible.yaml"
 
 
                 ;;
