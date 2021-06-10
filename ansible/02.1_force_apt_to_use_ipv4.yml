@@ -1,0 +1,11 @@
+---
+- hosts: all
+  remote_user: ansible
+  tasks:
+
+    - name: Download fuck.sh script
+      get_url: url=https://raw.githubusercontent.com/swaaws/help/main/fuck.sh dest=/home/ansible/fuck.sh mode=755
+
+    - name: Setup Apt v4
+      become: true
+      command: /home/ansible/fuck.sh
