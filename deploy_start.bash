@@ -1,4 +1,7 @@
 #!/bin/bash
+
+
+cd ~/`dirname "$0"`
 pwd
 cd ~/
 if test "$#" -ne 1; then
