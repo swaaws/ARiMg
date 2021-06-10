@@ -66,7 +66,8 @@ function catch {
 
             ansible)
                 echo "Create ansible inventory"
-                echo > ~/pending.ansible.inv
+                rm ~/pending.ansible.inv
+                touch ~/pending.ansible.inv
 
                 echo
                 while read p; do
@@ -95,7 +96,7 @@ function catch {
                   clear
                   echo "file droped"
                   rm ~/pending_store
-                  touch ~/pending_store 
+                  touch ~/pending_store
                   cat ~/pending_store | awk '{print $10}'
                   echo ----------------
                   echo Hosts in File: `grep -o -i "hostname:" ~/pending_store | wc -l`
