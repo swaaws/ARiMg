@@ -16,6 +16,7 @@ while $loop; do
       sort ~/pending_store > ~/pending_store.tmp
       uniq  ~/pending_store.tmp ~/pending_store.now
       mv ~/pending_store.now ~/pending_store
+      sed -i '/^$/d' pending_store
       clear
       cat ~/pending_store | awk '{print $10}'
       echo ----------------
