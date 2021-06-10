@@ -11,8 +11,8 @@ echo Press [q] when the number of hosts is correct.
 loop=true
 while $loop; do
     trapKey=
-    if [ -f ~/pending ]; then
-      cat ~/pending >> ~/pending_store
+    if [ -f ~/pending-* ]; then
+      cat ~/pending-* >> ~/pending_store
       sort ~/pending_store > ~/pending_store.tmp
       uniq  ~/pending_store.tmp ~/pending_store.now
       mv ~/pending_store.now ~/pending_store
