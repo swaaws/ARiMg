@@ -2,7 +2,7 @@
 
 
 cd ~/`dirname "$0"`
-pwd
+scriptroot=`pwd`
 cd ~/
 if test "$#" -ne 1; then
     echo "usage: $0 ubuntu-21.04-preinstalled-server-arm64+raspi.img.xz"
@@ -33,6 +33,7 @@ fi
 
 if [ -f ".ssh/id_rsa.pub" ]; then
     echo  "Found RSA Publickey"
+    cat .ssh/id_rsa.pub >> $scriptroot/ansible/user/default.yml
 else
     echo "Please run ssh-keygen"
     exit 1
