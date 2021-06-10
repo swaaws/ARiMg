@@ -73,5 +73,6 @@
     command: /finish.bash
 
 - name: Remove file (delete file)
+  file:
     path: /finish.bash
     state: absent
