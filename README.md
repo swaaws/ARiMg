@@ -44,6 +44,13 @@ Press [c] generate chef host inventory.
 Press [n] clear file.
 Press [q] when the number of hosts is correct.
 
+
+# Ansible steps
+ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook -i ~/pending.ansible.yaml ~/github/ARiMg/ansible/01_spinup.yml
+ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook -i ~/pending.ansible.yaml ~/github/ARiMg/ansible/02_apt_upgrade.yml
+ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook -i ~/pending.ansible.yaml ~/github/ARiMg/ansible/03_finish.yml
+
+
 ./arimg -d # Done
 Deploy done... RSA Reverse Access Removed
 ```
