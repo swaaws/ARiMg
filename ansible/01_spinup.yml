@@ -72,7 +72,8 @@
     become: true
     command: /finish.bash
 
-- name: Remove file (delete file)
-  file:
-    path: /finish.bash
-    state: absent
+  - name: Remove file
+    become: true
+    file:
+      path: /finish.bash
+      state: absent
