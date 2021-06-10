@@ -141,8 +141,8 @@ if [[ ${PIPESTATUS[0]} -ne 0 ]]; then
 fi
 eval set -- "$PARSED"
 
-ip=n
-user=n
+myip=n
+myuser=n
 key=n
 reversekey=n
 output=-
@@ -158,18 +158,20 @@ while true; do
             exit 1
             ;;
         -i|--ip)
-            ip="$2"
+            myip="$2"
             shift 2
             ;;
         -u|--user)
-            user="$2"
+            myuser="$2"
             shift 2
             ;;
         -k|--key)
+        echo todo
             key="$2"
             shift 2
             ;;
         -r|--reversekey)
+        echo todo
             reversekey="$2"
             shift 2
             ;;
@@ -449,9 +451,14 @@ EOF
 echo "Copy finish.bash to rootfs"
 sudo cp -f ~/finish.bash ~/mnt/finish.bash
 rm  ~/finish.bash
-
+if [[  $myip == n ]]; then
 myip=`ip addr | grep inet6 | grep global |  awk '{print $2}' | rev | cut -c4- | rev`
+fi
+
+if [[  $myuser == n ]]; then
 myuser=`whoami`
+fi
+
 echo "Create notifyer"
 echo "#!/bin/bash" > ~/notifyer
 echo "interface=`ip -o -6 route show to default | awk '{print $5}'`" >> ~/notifyer
@@ -518,7 +525,13 @@ if [ -f ~/$1-spinup.img ]; then
   fi
 mv $1-spinup.img $1-spinup.img.old
 fi
+if [[  $output == n ]]; then
 mv spinup.img $1-spinup.img
 
 echo -e "\e[32mFinished, $1-spinup.img created\e[0m"
-echo "Run ./deploy_cache.bash"
+else
+  mv spinup.img $output-spinup.img
+
+  echo -e "\e[32mFinished, $output-spinup.img created\e[0m"
+fi
+echo "Run ./arimg -c"
