@@ -6,8 +6,6 @@
   - name: Disable root login over SSH
     become: true
     lineinfile: dest=/etc/ssh/sshd_config regexp="^PermitRootLogin" line="PermitRootLogin no" state=present
-    notify:
-      - restart sshd
 
   - name: Disable password login
     become: true
@@ -77,3 +75,8 @@
     file:
       path: /finish.bash
       state: absent
+      
+  - name: Reboot host
+    shell: sleep 2 && /sbin/shutdown -r now "Ansible reboot"
+    async: 1
+    poll: 0

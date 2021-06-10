@@ -70,8 +70,8 @@ while $loop; do
               ansible-inventory -i ~/pending.ansible.inv --list -y > ~/pending.ansible.yaml
               rm ~/pending.ansible.inv
               echo "pending.ansible.yaml Created"
-              echo "ansible-playbook -i ~/pending.ansible.yaml $scriptroot/ansible/01_spinup.yml"
-              echo "ansible-playbook -i ~/pending.ansible.yaml $scriptroot/ansible/02_apt_upgrade.yml"
+              echo "ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook -i ~/pending.ansible.yaml $scriptroot/ansible/01_spinup.yml"
+              echo "ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook -i ~/pending.ansible.yaml $scriptroot/ansible/02_apt_upgrade.yml"
 
                 ;;
 
