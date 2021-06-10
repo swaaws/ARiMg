@@ -1,5 +1,5 @@
 ---
 
 keystodeploy:
-  - name: System Aansible
+  - name: System Ansible
     sshkey: ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQDswDOGeO4/XsuUiHejQ2XuGgek+YMxdCiOlOSSlH/MBKPNtWHYXw/iWTHFmTrz4fmoVBXtMcaoBTKqyBj7GLizLKD3o1XA2qSVRX/RiR1l4o70sCAsjBWNSy7BnQe10kPE/ZjhCxuYU+W6Q95RjDmCqH8BGQsnFatsRWz0HeWEWqP4pPH0z+66q7IY08dhz5wXan1JmcD74CpHFitcCbxXl9D30fOCC4g+fV5nUs0bXJa4ZU5jwIBeOF2oe0atBFrTF2nfSerU3m8nofAMZZXGQ2zskzT86Oo/54y//dTDaXmN6Ce8sgtcFMo1k/pzc5eHiRLT7Zjb5fl7TlzOhigoe46hdiDRWlSUFXK+ucBEowQ+Ho1U15pgZqdzMajCtQgpIfUB6OuVoL0nfQ3W791Jxj0lAIgQV+9pujohCLVUB20Hv85bcZ40NQkoIfPC1o1wVmPQJodqkUe6jzAqVIbOtwEFdG4l9i84xK8sDoeSjSDZKQWIhaAab0etsg6xaEs= Ansible
