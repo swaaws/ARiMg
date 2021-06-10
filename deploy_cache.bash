@@ -26,7 +26,7 @@ while $loop; do
       echo Press [c] generate chef host inventory.
       echo Press [n] clear file.
       echo Press [q] when the number of hosts is correct.
-      rm ~/pending
+      rm ~/pending-*
       rm ~/pending_store.tmp
     fi
     if IFS= read -d '' -rsn 1 -t .002 str; then
