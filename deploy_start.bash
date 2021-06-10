@@ -1,5 +1,5 @@
 #!/bin/bash
-cd ~/ 
+cd ~/
 if test "$#" -ne 1; then
     echo "usage: $0 ubuntu-21.04-preinstalled-server-arm64+raspi.img.xz"
     exit
@@ -27,7 +27,7 @@ if [ -f ~/spinup.img ]; then
 fi
 
 
-if [ -f "~/.ssh/id_rsa.pub" ]; then
+if [ -f ".ssh/id_rsa.pub" ]; then
     echo  "Found RSA Publickey"
 else
     echo "Please run ssh-keygen"
@@ -36,7 +36,7 @@ else
     # ssh-keygen -q -N "";
 fi
 
-if [ -f "~/.ssh/reverse_rsa.pub" ]; then
+if [ -f ".ssh/reverse_rsa.pub" ]; then
     echo  "Found Reverse RSA Publickey"
 else
     echo "Generate remote sshkey"
