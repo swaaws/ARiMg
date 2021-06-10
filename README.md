@@ -23,6 +23,8 @@ You get an Provisioning user called: _**spinup**_  with the password _**spinup**
 and if the Host is booted up it announce over ssh to your deploy host with usefull output.
 Your login looks like ssh spinup@[ip from ./deploy_cache.bash]
 
+Over ansible-playbooks all changes where reverted and a user called ansible where created 
+
 
 ## ⚡️ For the fast ones ⚡️
 ```bash
@@ -58,11 +60,11 @@ Deploy done... RSA Reverse Access Removed
 _**Scroll down look at point 6. Additional Ansible/Puppet/Chef steps**_  
 
 ## 📖 What's open 📖
-* permit password login
-* automatic provision thought Ansible/Puppet/Chef
+
+* automatic provision thought Puppet/Chef
 * GPT support
 * Support ISO's with Preseed File \*-\*
-
+* expand fs
 
 ## Download Structure
 
@@ -143,7 +145,7 @@ NAME
       arimg - modify operating system images
 
 SYNOPSIS
-      arimg [-apc] [-i|--ip 127.0.0.2]
+      arimg [-cd] [-i|--ip 127.0.0.2]
             [-u|--user spinup] [-k|--key .ssh/id_rsa]
             [-r|--reversekey .ssh/reversekey_rsa] [-o|--output deploy.img] input
 
@@ -152,16 +154,20 @@ DESCRIPTION
             according to the ARM Platform.
 
       The options are:
-      -i    Specify the ip where the deploy host conect over ssh.
+      -c    Catch Hosts from Network
+
+      -d    Done Remove Reverse RSA key from deployment host
+
+      -i    Specify the ip where the deploy host connect over ssh.
             (Default the host ipv6 address where arimg has build the image)
 
-      -u    Specify the user where the deploy host conect over ssh.
+      -u    Specify the user where the deploy host connect over ssh.
             (Current user where arimg has build the image)
 
       -k    Specify a file which used to provide an rsa key for user spinup.
-            (The default is ~/.ssh/id_rsa).
+            (The default is ~/.ssh/id_rsa). Note: Ansible use ~/.ssh/id_rsa
 
-      -r    Specify a file which used to allow conent to the deploy host.
+      -r    Specify a file which used to allow connent to the deploy host.
             (The default is ~/.ssh/reverse_rsa).
 
       -o    name the resulting image
@@ -185,7 +191,7 @@ wget https://cdimage.ubuntu.com/releases/21.04/release/ubuntu-21.04-preinstalled
 
 _**3. Start Deployment**_
 ```bash
-ubuntu@raspberry:~$ ./deploy_start.bash ubuntu-21.04-preinstalled-server-arm64+raspi.img.xz
+ubuntu@raspberry:~$ ARiMg/arimg ubuntu-21.04-preinstalled-server-arm64+raspi.img.xz
 Chosse Filedesign: [1] - sd_card-image, [2] - plain_rootfs: 1
 want shell access to img? [y] - yes, [n] - no: y
 get file info
@@ -242,32 +248,42 @@ Finished, ubuntu-21.04-preinstalled-server-arm64+raspi.img.xz-spinup.img created
 ```
 _**4. Cache Hosts**_
 ```bash
-hostname: pending-setup gateway: 2001:DB8::/32 global6: 2001:DB8::1/32 link-local: fe80:DB8::/32 mac_addr: ff:ff:ff:ff:ff:ff status: running failed: 0 units
-hostname: pending-setup gateway: 2001:DB8::/32 global6: 2001:DB8::2/32 link-local: fe80:DB8::/32 mac_addr: ff:ff:ff:ff:ff:ff status: running failed: 0 units
-hostname: pending-setup gateway: 2001:DB8::/32 global6: 2001:DB8::3/32 link-local: fe80:DB8::/32 mac_addr: ff:ff:ff:ff:ff:ff status: running failed: 0 units
-Hosts in File: 3
-Press [q] if all the count matches to your Deployment
-...
+ubuntu@raspberry:~$ ARiMg/arimg -c # Catch hosts from network
+----------------
+Hosts in File: 0
+Press [a] generate ansible host inventory.
+Press [p] generate puppet host inventory.
+Press [c] generate chef host inventory.
+Press [n] clear file.
+Press [q] if the count matches to your Deployment and inventory is created [apc]
+a
+ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook -i ~/pending.ansible.yaml ~/github/ARiMg/ansible/01_spinup.yml
+ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook -i ~/pending.ansible.yaml ~/github/ARiMg/ansible/02_apt_upgrade.yml
+ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook -i ~/pending.ansible.yaml ~/github/ARiMg/ansible/03_finish.yml
+
+q
+ubuntu@raspberry:~$
 ```
 
 _**5. Finish Deployment**_
 ```bash
 # This Step is important because simple password -> ssh key to your deployment host
-ubuntu@raspberry:~$ ./deploy_done.bash
+ubuntu@raspberry:~$ ARiMg/arimg -d
+Deploy done... RSA Reverse Access Removed
 ubuntu@raspberry:~$
 ```
 
 _**6. Additional Ansible/Puppet/Chef steps**_
 ```text
 Throught:
-* Disable Passwordauth
-* Run finish.bash on nodes
-* Add Ansible management User
-* Remove spinup User
-* Disable Root Login
+* Disable Passwordauth - ansible/01_spinup.yml
+* Run finish.bash on nodes - ansible/03_finish.yml
+* Add Ansible management User - ansible/01_spinup.yml
+* Remove spinup User - ansible/03_finish.yml
+* Disable Root Login - ansible/01_spinup.yml
 * Change Password
 * Some OS'es ships default user keep an eye on it
-* expand fs
+
 
 ```
 _**7. Other**_
