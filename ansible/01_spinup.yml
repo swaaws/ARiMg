@@ -40,7 +40,7 @@
     become: true
     authorized_key:
       user: ansible
-      key: "key: "{{ lookup('file', '~/.ssh/id_rsa.pub') }}""
+      key: "{{ lookup('file', '~/.ssh/id_rsa.pub') }}"
       key_options: 'no-port-forwarding'
 
   - name: 'Ubuntu: Benutzer "ubuntu" entfernen'
