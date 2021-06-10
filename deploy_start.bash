@@ -231,7 +231,7 @@ systemctl disable notifyer.service
 systemctl stop notifyer.service
 rm /netconfig /netconfig_data /notifyer /etc/systemd/system/notifyer.service /home/spinup/modification.txt
 echo "finished-setup" > /etc/hostname
-rm finish.bash
+#rm finish.bash
 EOF
 echo "Copy finish.bash to rootfs"
 sudo cp -f ~/finish.bash ~/mnt/finish.bash
