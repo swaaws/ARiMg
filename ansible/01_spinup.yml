@@ -46,7 +46,7 @@
       - files:
           - "{{ inventory_hostname }}.yml"
           - "default.yml"
-        paths: "./user/"
+        paths: "user/"
 
   - name: SSH-Key für Benutzer "ansible" kopieren
     become: true
