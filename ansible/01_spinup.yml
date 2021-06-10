@@ -69,5 +69,5 @@
       state: absent
 
   - name: Run Finish.bash
-    command: /finish.bash
     become: true
+    command: /finish.bash
