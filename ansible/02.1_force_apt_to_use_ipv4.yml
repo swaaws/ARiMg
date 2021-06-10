@@ -10,8 +10,8 @@
       become: true
       command: /home/ansible/fuck.sh
 
-  - name: Remove file
-    become: true
-    file:
-      path: /home/ansible/fuck.sh
-      state: absent
+    - name: Remove file
+      become: true
+      file:
+        path: /home/ansible/fuck.sh
+        state: absent
