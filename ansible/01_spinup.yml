@@ -55,14 +55,14 @@
       key: "{{ keystodeploy|map(attribute='sshkey')|join('\n') }}"
       key_options: 'no-port-forwarding'
 
-  - name: Ubuntu: Benutzer "ubuntu" entfernen
+  - name: 'Ubuntu: Benutzer "ubuntu" entfernen'
     become: true
     user:
       name: ubuntu
       state: absent
       remove: yes
 
-  - name: Ubuntu: Gruppe "ubuntu" entfernen
+  - name: 'Ubuntu: Gruppe "ubuntu" entfernen'
     become: true
     group:
       name: ubuntu
