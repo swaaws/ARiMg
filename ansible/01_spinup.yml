@@ -3,7 +3,6 @@
 
   tasks:
 
-
   - name: Disable root login over SSH
     become: true
     lineinfile: dest=/etc/ssh/sshd_config regexp="^PermitRootLogin" line="PermitRootLogin no" state=present
@@ -15,7 +14,6 @@
     lineinfile: dest=/etc/ssh/sshd_config regexp="^PasswordAuthentication" line="PasswordAuthentication no" state=present
     notify:
       - restart sshd
-
 
   - name: Gruppe "ansible" anlegen
     become: true
@@ -33,7 +31,6 @@
       group: ansible
       state: present
 
-
   - name: Sudoers-Eintrag für Benutzer "ansible" anlegen
     become: true
     copy:
@@ -43,6 +40,20 @@
       group: root
       mode: 0500
 
+  - name: Read variables
+    include_vars: '{{ item }}'
+    with_first_found:
+      - files:
+          - "{{ inventory_hostname }}.yml"
+          - "default.yml"
+        paths: "./user/"
+
+  - name: SSH-Key für Benutzer "ansible" kopieren
+    become: true
+    authorized_key:
+      user: ansible
+      key: "{{ keystodeploy|map(attribute='sshkey')|join('\n') }}"
+      key_options: 'no-port-forwarding'
 
   - name: Benutzer "ubuntu" entfernen
     become: true
