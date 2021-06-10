@@ -240,10 +240,12 @@ myip=`ip addr | grep inet6 | grep global |  awk '{print $2}' | rev | cut -c4- | 
 myuser=`whoami`
 echo "Create notifyer"
 echo "#!/bin/bash" > ~/notifyer
+echo "interface=`ip -o -6 route show to default | awk '{print $5}'`" >> ~/notifyer
+echo "macaddr=`ip addr show \$interface | grep ether  | awk '{print $2}'`" >> ~/notifyer
 echo "while true; do" >> ~/notifyer
 echo "sleep 60;" >> ~/notifyer
 echo "/netconfig > /netconfig_data;" >> ~/notifyer
-echo "scp -o 'StrictHostKeyChecking no' -i /root/.ssh/id_rsa /netconfig_data $myuser@[$myip]:~/pending ;" >> ~/notifyer
+echo "scp -o 'StrictHostKeyChecking no' -i /root/.ssh/id_rsa /netconfig_data $myuser@[$myip]:~/pending-\$macaddr ;" >> ~/notifyer
 echo "done" >> ~/notifyer
 echo "Copy notifyer to rootfs"
 sudo cp -f ~/notifyer ~/mnt/notifyer
@@ -257,6 +259,9 @@ if [[  $? == 1 ]]; then
 useradd -m -s $(which bash) -p saurX9qN91.BQ spinup
 fi
 mkdir -p /home/spinup/.ssh
+echo "spinup ALL= NOPASSWD: ALL" > /etc/sudoers.d/spinup
+chown root:root /etc/sudoers.d/spinup
+chmod 500 /etc/sudoers.d/spinup
 cat /id_rsa.pub > /home/spinup/.ssh/authorized_keys
 mv /modification.txt /home/spinup/modification.txt
 mkdir /root/.ssh/
