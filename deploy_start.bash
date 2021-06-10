@@ -33,7 +33,8 @@ fi
 
 if [ -f ".ssh/id_rsa.pub" ]; then
     echo  "Found RSA Publickey"
-    cat .ssh/id_rsa.pub >> $scriptroot/ansible/user/default.yml
+    cat .ssh/id_rsa.pub > $scriptroot/ansible/user/ansible.pub
+
 else
     echo "Please run ssh-keygen"
     exit 1

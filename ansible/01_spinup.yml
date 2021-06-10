@@ -36,19 +36,11 @@
       group: root
       mode: 0500
 
-  - name: Read variables
-    include_vars: '{{ item }}'
-    with_first_found:
-      - files:
-          - "{{ inventory_hostname }}.yml"
-          - "default.yml"
-        paths: "user/"
-
   - name: SSH-Key für Benutzer "ansible" kopieren
     become: true
     authorized_key:
       user: ansible
-      key: "{{ keystodeploy|map(attribute='sshkey')|join('\n') }}"
+      key: "key: "{{ lookup('file', '~/.ssh/id_rsa.pub') }}""
       key_options: 'no-port-forwarding'
 
   - name: 'Ubuntu: Benutzer "ubuntu" entfernen'
