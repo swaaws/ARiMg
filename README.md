@@ -21,7 +21,7 @@ But what is if you don't have a keyboard, mouse and display because of idleness?
 
 You get an Provisioning user called: _**spinup**_  with the password _**spinup**_
 and if the Host is booted up it announce over ssh to your deploy host with usefull output.
-Your login looks like ssh spinup@[ip from ./deploy_cache.bash]
+Your login looks like ssh spinup@[ip from _**./arimg -c ; cat pending-\***_ ]
 
 Over ansible-playbooks all changes where reverted and a user called _**ansible**_ where created
 
