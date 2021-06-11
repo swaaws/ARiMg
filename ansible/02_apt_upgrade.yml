@@ -11,6 +11,7 @@
         update_cache: "yes"
         cache_valid_time: 0
     - name: Reboot host
+      become: true
       shell: sleep 2 && /sbin/shutdown -r now "Ansible reboot"
       async: 1
       poll: 0
