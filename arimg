@@ -533,12 +533,10 @@ if [ -f ~/${@: -1}-spinup.img ]; then
 mv ${@: -1}-spinup.img ${@: -1}-spinup.img.old
 fi
 if [[  $output == n ]]; then
-mv spinup.img ${@: -1}-spinup.img
-
-echo -e "\e[32mFinished, ${@: -1}-spinup.img created\e[0m"
+  mv ~/spinup.img ~/${@: -1}-spinup.img
+  echo -e "\e[32mFinished, ${@: -1}-spinup.img created\e[0m"
 else
-  mv spinup.img $output-spinup.img
-
+  mv ~/spinup.img ~/$output-spinup.img
   echo -e "\e[32mFinished, $output-spinup.img created\e[0m"
 fi
 echo "Run ./arimg -c"
