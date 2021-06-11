@@ -23,7 +23,7 @@ You get an Provisioning user called: _**spinup**_  with the password _**spinup**
 and if the Host is booted up it announce over ssh to your deploy host with usefull output.
 Your login looks like ssh spinup@[ip from ./deploy_cache.bash]
 
-Over ansible-playbooks all changes where reverted and a user called ansible where created
+Over ansible-playbooks all changes where reverted and a user called _**ansible**_ where created
 
 
 ## ⚡️ For the fast ones ⚡️
@@ -65,6 +65,9 @@ _**Scroll down look at point 6. Additional Ansible/Puppet/Chef steps**_
 * GPT support
 * Support ISO's with Preseed File \*-\*
 * expand fs
+
+## Operating system peculiarities
+* ArchLinuxARM dosnt have sudo. so ansible cant work at this point use --ask-become
 
 ## Download Structure
 
@@ -277,10 +280,10 @@ _**6. Additional Ansible/Puppet/Chef steps**_
 ```text
 Throught:
 * Disable Passwordauth - ansible/01_spinup.yml
-* Run finish.bash on nodes - ansible/03_finish.yml
+* Disable Root Login - ansible/01_spinup.yml
 * Add Ansible management User - ansible/01_spinup.yml
 * Remove spinup User - ansible/03_finish.yml
-* Disable Root Login - ansible/01_spinup.yml
+* Run finish.bash on nodes - ansible/03_finish.yml
 * Change Password
 * Some OS'es ships default user keep an eye on it
 
