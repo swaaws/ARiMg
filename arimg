@@ -229,7 +229,7 @@ read -p "Choose File Design: [1] - sd_card-image, [2] - plain_rootfs: " filedesi
 read -p "want shell access to img? [y] - yes, [n] - no: " shellaccess
 
 compression=`file ${@: -1} | awk '{print $2}'`
-echo "get file info"
+echo "get file info (needs time...)"
 echo "shasum: `shasum ${@: -1} | awk '{print $1}'`"
 echo "File: ${@: -1}"
 echo "Compression detected: $compression"
@@ -273,17 +273,17 @@ if [[  $filedesign == 1 ]]; then
     case $compression in
 
         Zip)
-            echo "Decompress Zip"
+            echo "Decompress Zip (needs time...)"
             unzip ${@: -1} -d ~/temp
             mv ~/temp/*.img ~/spinup.img
             rm -rf ~/temp
             ;;
 
         XZ)
-            echo "Create duplicate"
+            echo "Create duplicate (needs time...)"
             cp ${@: -1} ~/spinup.img.xz
 
-            echo "Decompress xz"
+            echo "Decompress xz (needs time...)"
             xz --decompress ~/spinup.img.xz
             ;;
 
@@ -345,19 +345,19 @@ if [[  $filedesign == 2 ]]; then
 
         Zip)
             exit 1
-            echo "Decompress Zip \(needs time...\)"
+            echo "Decompress Zip (needs time...)"
             unzip ${@: -1} -d ~/mnt
             ;;
 
         XZ)
             exit 1
-            echo "Decompress the file \(needs time...\)"
+            echo "Decompress the file (needs time...)"
             xz --decompress ${@: -1} ~/mnt
             ;;
 
         gzip)
 
-            echo "Decompress the file \(needs time...\)"
+            echo "Decompress the file (needs time...)"
             sudo bsdtar -xpf ${@: -1} -C ~/mnt
             ;;
 
