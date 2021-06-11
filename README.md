@@ -23,7 +23,7 @@ You get an Provisioning user called: _**spinup**_  with the password _**spinup**
 and if the Host is booted up it announce over ssh to your deploy host with usefull output.
 Your login looks like ssh spinup@[ip from ./deploy_cache.bash]
 
-Over ansible-playbooks all changes where reverted and a user called ansible where created 
+Over ansible-playbooks all changes where reverted and a user called ansible where created
 
 
 ## ⚡️ For the fast ones ⚡️
@@ -145,20 +145,20 @@ NAME
       arimg - modify operating system images
 
 SYNOPSIS
-      arimg [-cd] [-i|--ip 127.0.0.2]
+      arimg [-cd] [-i|--ip 2001:DB8::1]
             [-u|--user spinup] [-k|--key .ssh/id_rsa]
-            [-r|--reversekey .ssh/reversekey_rsa] [-o|--output deploy.img] input
+            [-r|--reversekey .ssh/reversekey_rsa] [-o|--output deploy] input
 
 DESCRIPTION
       arimg is a helper to modify SD Card Images
             according to the ARM Platform.
 
       The options are:
-      -c    Catch Hosts from Network
+      -c    Catch hosts from network (interactive)
 
       -d    Done Remove Reverse RSA key from deployment host
 
-      -i    Specify the ip where the deploy host connect over ssh.
+      -i    Specify the ip where the deploy host connect over ssh. ATP: ipv6 only
             (Default the host ipv6 address where arimg has build the image)
 
       -u    Specify the user where the deploy host connect over ssh.
