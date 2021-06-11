@@ -216,7 +216,7 @@ usage: arimg [-apc] [-i|--ip 127.0.0.2]
 fi
 
 echo " IP: $myip, User: $myuser, RSA Key: $key, Signal Key: $reversekey, Out: $output"
-
+set +o errexit +o pipefail +o noclobber +o nounset
 cd ~/`dirname "$0"`
 scriptroot=`pwd`
 cd ~/
