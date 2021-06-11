@@ -17,7 +17,8 @@ function catch {
   echo Press [p] generate puppet host inventory.
   echo Press [c] generate chef host inventory.
   echo Press [n] clear file.
-  echo Press [q] when the number of hosts is correct.
+  echo Press [q] if the count matches to your Deployment and Ansible and/or Puppet and/or Chef inventory is created
+
   loop=true
   while $loop; do
       trapKey=
@@ -35,7 +36,7 @@ function catch {
         echo Press [p] generate puppet host inventory.
         echo Press [c] generate chef host inventory.
         echo Press [n] clear file.
-        echo Press [q] when the number of hosts is correct.
+        echo Press [q] if the count matches to your Deployment and Ansible and/or Puppet and/or Chef inventory is created
         rm ~/pending-*
         rm ~/pending_store.tmp
       fi
@@ -104,7 +105,7 @@ function catch {
                   echo Press [p] generate puppet host inventory.
                   echo Press [c] generate chef host inventory.
                   echo Press [n] clear file.
-                  echo Press [q] when the number of hosts is correct.
+                  echo Press [q] if the count matches to your Deployment and Ansible and/or Puppet and/or Chef inventory is created
                   ;;
           esac
     fi
