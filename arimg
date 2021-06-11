@@ -209,7 +209,7 @@ done
 
 if test "$#" -ne 1; then
   echo "
-usage: arimg [-apc] [-i|--ip 127.0.0.2]
+usage: arimg [-apc] [-i|--ip 2001:DB8::1]
           [-u|--user spinup] [-k|--key .ssh/id_rsa]
           [-r|--reversekey .ssh/reversekey_rsa]
           [-o|--output deploy.img] input"
