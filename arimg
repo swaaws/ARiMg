@@ -327,7 +327,7 @@ if [[  $filedesign == 2 ]]; then
     sudo parted ~/spinup.img mkpart primary ext4 257MiB 100%
 
     echo "Attach spinup.img to loop device"
-    loop=`sudo losetup --find --partscan --show spinup.img`
+    loop=`sudo losetup --find --partscan --show ~/spinup.img`
 
     echo "Create vfat on boot patition"
     sudo mkfs.vfat -F 32 -n BOOT "${loop}p1" > /dev/null
