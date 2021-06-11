@@ -358,7 +358,7 @@ if [[  $filedesign == 2 ]]; then
         gzip)
 
             echo "Decompress the file \(needs time...\)"
-            sudo bsdtar -xpf ~/${@: -1} -C ~/mnt
+            sudo bsdtar -xpf ${@: -1} -C ~/mnt
             ;;
 
         *)
