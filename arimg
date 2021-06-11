@@ -247,7 +247,7 @@ if [ -f ~/spinup.img ]; then
 fi
 
 
-if [ -f ".ssh/id_rsa.pub" ]; then
+if [ -f ~/.ssh/id_rsa.pub ]; then
     echo  "Found RSA Publickey"
 
 else
@@ -257,7 +257,7 @@ else
     # ssh-keygen -q -N "";
 fi
 
-if [ -f ".ssh/reverse_rsa.pub" ]; then
+if [ -f ~/.ssh/reverse_rsa.pub ]; then
     echo  "Found Reverse RSA Publickey"
 else
     echo "Generate remote sshkey"
