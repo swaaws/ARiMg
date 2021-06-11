@@ -216,6 +216,7 @@ usage: arimg [-apc] [-i|--ip 127.0.0.2]
 fi
 
 echo " IP: $myip, User: $myuser, RSA Key: $key, Signal Key: $reversekey, Out: $output"
+
 cd ~/`dirname "$0"`
 scriptroot=`pwd`
 cd ~/
@@ -227,10 +228,10 @@ fi
 read -p "Choose File Design: [1] - sd_card-image, [2] - plain_rootfs: " filedesign
 read -p "want shell access to img? [y] - yes, [n] - no: " shellaccess
 
-compression=`file $1 | awk '{print $2}'`
+compression=`file ${@: -1} | awk '{print $2}'`
 echo "get file info"
-echo "shasum: `shasum $1 | awk '{print $1}'`"
-echo "File: $1"
+echo "shasum: `shasum ${@: -1} | awk '{print $1}'`"
+echo "File: ${@: -1}"
 echo "Compression detected: $compression"
 
 if [ -d ~/mnt ]; then
@@ -273,14 +274,14 @@ if [[  $filedesign == 1 ]]; then
 
         Zip)
             echo "Decompress Zip"
-            unzip $1 -d ~/temp
+            unzip ${@: -1} -d ~/temp
             mv ~/temp/*.img ~/spinup.img
             rm -rf ~/temp
             ;;
 
         XZ)
             echo "Create duplicate"
-            cp $1 ~/spinup.img.xz
+            cp ${@: -1} ~/spinup.img.xz
 
             echo "Decompress xz"
             xz --decompress ~/spinup.img.xz
@@ -345,19 +346,19 @@ if [[  $filedesign == 2 ]]; then
         Zip)
             exit 1
             echo "Decompress Zip \(needs time...\)"
-            unzip $1 -d ~/mnt
+            unzip ${@: -1} -d ~/mnt
             ;;
 
         XZ)
             exit 1
             echo "Decompress the file \(needs time...\)"
-            xz --decompress $1 ~/mnt
+            xz --decompress ${@: -1} ~/mnt
             ;;
 
         gzip)
 
             echo "Decompress the file \(needs time...\)"
-            sudo bsdtar -xpf ~/$1 -C ~/mnt
+            sudo bsdtar -xpf ~/${@: -1} -C ~/mnt
             ;;
 
         *)
@@ -524,17 +525,17 @@ sudo umount ~/mnt
 echo "Remove mountpoint"
 sudo rm -rf ~/mnt
 
-if [ -f ~/$1-spinup.img ]; then
-  if [ -f ~/$1-spinup.img.old ]; then
-    echo "Removed $1-spinup.img.old"
-    sudo rm -rf ~/$1-spinup.img.old
+if [ -f ~/${@: -1}-spinup.img ]; then
+  if [ -f ~/${@: -1}-spinup.img.old ]; then
+    echo "Removed ${@: -1}-spinup.img.old"
+    sudo rm -rf ~/${@: -1}-spinup.img.old
   fi
-mv $1-spinup.img $1-spinup.img.old
+mv ${@: -1}-spinup.img ${@: -1}-spinup.img.old
 fi
 if [[  $output == n ]]; then
-mv spinup.img $1-spinup.img
+mv spinup.img ${@: -1}-spinup.img
 
-echo -e "\e[32mFinished, $1-spinup.img created\e[0m"
+echo -e "\e[32mFinished, ${@: -1}-spinup.img created\e[0m"
 else
   mv spinup.img $output-spinup.img
 
