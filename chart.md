@@ -1,7 +1,15 @@
 ```mermaid
 graph TD;
-  A-->B;
-  A-->C;
-  B-->D;
-  C-->D;
+  ./arimg---->|-c|Catch;
+  ./arimg----->|-d|Done;
+ 
+  Catch-->|a|MakeAnsibleInv;
+  Catch-->|p|MakePuppetInv;
+  Catch-->|c|MakeChefInv;
+  Catch-->|n|WipeFile;
+  Catch-->|q|Exit;
+  option's-->|-i/--ip|AnounceHostIP
+  option's-->|-u/--user|AnounceHostUser
+  ./arimg--->|option's|input
+  
 ```
