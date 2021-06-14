@@ -152,7 +152,7 @@ while true; do
                     [-i|—-ip $(ip addr show $interface | grep global | grep inet6 | awk '{print $2}'| rev | cut -c4- | rev)]
                     [-u|--user $(whoami)] [-k|-—key .ssh/id_rsa]
                     [-r|—-reversekey .ssh/reversekey_rsa]
-            [-o|—-output deploy.img] input"
+            [-o|—-output deploy] input"
             exit 1
             ;;
         -i|--ip)
@@ -203,7 +203,7 @@ if test "$#" -ne 1; then
 usage: arimg [-apc] [-i|--ip $(ip addr show $interface | grep global | grep inet6 | awk '{print $2}'| rev | cut -c4- | rev)]
           [-u|--user $(whoami)] [-k|--key .ssh/id_rsa]
           [-r|--reversekey .ssh/reversekey_rsa]
-    [-o|--output deploy.img] input"
+    [-o|--output deploy] input"
     exit
 fi
 
