@@ -24,15 +24,17 @@ sequenceDiagram
 
     Deployment->>Deployment: ./arimg operating_system.img
 
-    Note right of Deployment: Same Architecture <br/>as Clients
+    Note right of Deployment: Same Architecture <br/>as Clients<br/> arm64 <-> arm64
 
     Deployment->>Client: over Netboot or removable storage
     loop Announce
         Client->>Network: /notyfier <br/>sleep 60
         Network->>Deployment: if ./arimg <br/>--ip [same as Deployment]
     end
+    Deployment->>Deployment: ./arimg -c
+    Note right of Deployment: Generate Hosts File, Ansible- <br/>Puppet- Chef- Inventory.
 
-
-
+    Deployment->>Deployment: ./arimg -d
+    Note right of Deployment: Remove Reverse RSA Key
 
 ```
