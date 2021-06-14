@@ -1,5 +1,7 @@
 #!/bin/bash
-
+cd ~/`dirname "$0"`
+scriptroot=`pwd`
+cd -
 
 function catch {
     #!/bin/bash
@@ -122,15 +124,6 @@ function donersa {
 }
 
 
-
-
-
-
-
-
-
-
-
 set -o errexit -o pipefail -o noclobber -o nounset
 
 ! getopt --test > /dev/null
@@ -216,18 +209,15 @@ usage: arimg [-apc] [-i|--ip 2001:DB8::1]
     exit
 fi
 
-echo " IP: $myip, User: $myuser, RSA Key: $key, Signal Key: $reversekey, Out: $output"
 set +o errexit +o pipefail +o noclobber +o nounset
-cd ~/`dirname "$0"`
-scriptroot=`pwd`
-cd -
+
 if test "$#" -ne 1; then
     echo "usage: $0 ubuntu-21.04-preinstalled-server-arm64+raspi.img.xz"
     exit
 fi
 
-read -p "Choose File Design: [1] - sd_card-image, [2] - plain_rootfs: " filedesign
-read -p "want shell access to img? [y] - yes, [n] - no: " shellaccess
+read -p "Choose File Design: sd_card-image[1], plain_rootfs[2]: " filedesign
+read -p "want shell access to img? [y,N]: " shellaccess
 
 compression=`file ${@: -1} | awk '{print $2}'`
 echo "get file info (needs time...)"
