@@ -2,123 +2,123 @@
 
 
 function catch {
-  #!/bin/bash
-  cd ~/`dirname "$0"`
-  scriptroot=`pwd`
-  cd -
-  echo "$(grep -v "`cat ~/.ssh/reverse_rsa.pub`" ~/.ssh/authorized_keys)" > ~/.ssh/authorized_keys1
-  mv ~/.ssh/authorized_keys1 ~/.ssh/authorized_keys
-  cat ~/.ssh/reverse_rsa.pub >> ~/.ssh/authorized_keys
-  clear
-  cat ~/pending_store | awk '{print $10}'
-  echo ----------------
-  echo Hosts in File: `grep -o -i "hostname:" ~/pending_store | wc -l`
-  echo Press [a] generate ansible host inventory.
-  echo Press [p] generate puppet host inventory.
-  echo Press [c] generate chef host inventory.
-  echo Press [n] clear file.
-  echo Press [q] if the count matches to your Deployment and Ansible and/or Puppet and/or Chef inventory is created
+    #!/bin/bash
+    cd ~/`dirname "$0"`
+    scriptroot=`pwd`
+    cd -
+    echo "$(grep -v "`cat ~/.ssh/reverse_rsa.pub`" ~/.ssh/authorized_keys)" > ~/.ssh/authorized_keys1
+    mv ~/.ssh/authorized_keys1 ~/.ssh/authorized_keys
+    cat ~/.ssh/reverse_rsa.pub >> ~/.ssh/authorized_keys
+    clear
+    cat ~/pending_store | awk '{print $10}'
+    echo ----------------
+    echo Hosts in File: `grep -o -i "hostname:" ~/pending_store | wc -l`
+    echo Press [a] generate ansible host inventory.
+    echo Press [p] generate puppet host inventory.
+    echo Press [c] generate chef host inventory.
+    echo Press [n] clear file.
+    echo Press [q] if the count matches to your Deployment and Ansible and/or Puppet and/or Chef inventory is created
 
-  loop=true
-  while $loop; do
-      trapKey=
-      if [ -f ~/pending-* ]; then
-        cat ~/pending-* >> ~/pending_store
-        sort ~/pending_store > ~/pending_store.tmp
-        uniq  ~/pending_store.tmp ~/pending_store.now
-        mv ~/pending_store.now ~/pending_store
-        sed -i '/^$/d' ~/pending_store
-        clear
-        cat ~/pending_store | awk '{print $10}'
-        echo ----------------
-        echo Hosts in File: `grep -o -i "hostname:" ~/pending_store | wc -l`
-        echo Press [a] generate ansible host inventory.
-        echo Press [p] generate puppet host inventory.
-        echo Press [c] generate chef host inventory.
-        echo Press [n] clear file.
-        echo Press [q] if the count matches to your Deployment and Ansible and/or Puppet and/or Chef inventory is created
-        rm ~/pending-*
-        rm ~/pending_store.tmp
-      fi
-      if IFS= read -d '' -rsn 1 -t .002 str; then
-          while IFS= read -d '' -rsn 1 -t .002 chr; do
-              str+="$chr"
-          done
-          case $str in
-              a) trapKey=ansible    ;;
-              p) trapKey=puppet  ;;
-              c) trapKey=chef ;;
-              h) trapKey=hosts ;;
-              n) trapKey=dropfile ;;
-              q | $'\E') loop=false  ;;
-          esac
-      fi
-      if [ "$trapKey" ]; then
-          case $trapKey in
-            hosts)
-                echo "Create Hostsfile"
-                while read p; do
-                    echo "$p" | awk '{print $6, $10}' | rev | cut -c4- | rev >>  ~/tmp.hosts
-                done <~/pending_store
+    loop=true
+    while $loop; do
+        trapKey=
+        if [ -f ~/pending-* ]; then
+            cat ~/pending-* >> ~/pending_store
+            sort ~/pending_store > ~/pending_store.tmp
+            uniq  ~/pending_store.tmp ~/pending_store.now
+            mv ~/pending_store.now ~/pending_store
+            sed -i '/^$/d' ~/pending_store
+            clear
+            cat ~/pending_store | awk '{print $10}'
+            echo ----------------
+            echo Hosts in File: `grep -o -i "hostname:" ~/pending_store | wc -l`
+            echo Press [a] generate ansible host inventory.
+            echo Press [p] generate puppet host inventory.
+            echo Press [c] generate chef host inventory.
+            echo Press [n] clear file.
+            echo Press [q] if the count matches to your Deployment and Ansible and/or Puppet and/or Chef inventory is created
+            rm ~/pending-*
+            rm ~/pending_store.tmp
+        fi
+        if IFS= read -d '' -rsn 1 -t .002 str; then
+            while IFS= read -d '' -rsn 1 -t .002 chr; do
+                str+="$chr"
+            done
+            case $str in
+                a) trapKey=ansible    ;;
+                p) trapKey=puppet  ;;
+                c) trapKey=chef ;;
+                h) trapKey=hosts ;;
+                n) trapKey=dropfile ;;
+                q | $'\E') loop=false  ;;
+            esac
+        fi
+        if [ "$trapKey" ]; then
+            case $trapKey in
+                hosts)
+                    echo "Create Hostsfile"
+                    while read p; do
+                        echo "$p" | awk '{print $6, $10}' | rev | cut -c4- | rev >>  ~/tmp.hosts
+                    done <~/pending_store
 
-                mv ~/tmp.hosts ~/pending.hosts
-                echo "pending.hosts Created"
-                ;;
+                    mv ~/tmp.hosts ~/pending.hosts
+                    echo "pending.hosts Created"
+                    ;;
 
-            ansible)
-                echo "Create ansible inventory"
-                rm ~/pending.ansible.inv
-                touch ~/pending.ansible.inv
+                ansible)
+                    echo "Create ansible inventory"
+                    rm ~/pending.ansible.inv
+                    touch ~/pending.ansible.inv
 
-                echo
-                while read p; do
-                    echo "$p" | awk '{print "["$10"]"}' | sed 's/://g' >> ~/pending.ansible.inv
-                    echo "$p" | awk '{print $6}' | rev | cut -c4- | rev  >> ~/pending.ansible.inv
-                    echo "" >> ~/pending.ansible.inv
-                done <~/pending_store
-                ansible-inventory -i ~/pending.ansible.inv --list -y > ~/pending.ansible.yaml
-                rm ~/pending.ansible.inv
-                echo "pending.ansible.yaml Created"
-                echo "ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook -i ~/pending.ansible.yaml $scriptroot/ansible/01_spinup.yml"
-                echo "ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook -i ~/pending.ansible.yaml $scriptroot/ansible/02_apt_upgrade.yml"
-                echo "ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook -i ~/pending.ansible.yaml $scriptroot/ansible/03_finish.yml"
-                  ;;
+                    echo
+                    while read p; do
+                        echo "$p" | awk '{print "["$10"]"}' | sed 's/://g' >> ~/pending.ansible.inv
+                        echo "$p" | awk '{print $6}' | rev | cut -c4- | rev  >> ~/pending.ansible.inv
+                        echo "" >> ~/pending.ansible.inv
+                    done <~/pending_store
+                    ansible-inventory -i ~/pending.ansible.inv --list -y > ~/pending.ansible.yaml
+                    rm ~/pending.ansible.inv
+                    echo "pending.ansible.yaml Created"
+                    echo "ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook -i ~/pending.ansible.yaml $scriptroot/ansible/01_spinup.yml"
+                    echo "ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook -i ~/pending.ansible.yaml $scriptroot/ansible/02_apt_upgrade.yml"
+                    echo "ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook -i ~/pending.ansible.yaml $scriptroot/ansible/03_finish.yml"
+                    ;;
 
-              puppet)
-                  echo ""
+                puppet)
+                    echo ""
 
-                  ;;
+                    ;;
 
-              chef)
-                  echo ""
-                  ;;
+                chef)
+                    echo ""
+                    ;;
 
-              dropfile)
-                  clear
-                  echo "file droped"
-                  rm ~/pending_store
-                  touch ~/pending_store
-                  cat ~/pending_store | awk '{print $10}'
-                  echo ----------------
-                  echo Hosts in File: `grep -o -i "hostname:" ~/pending_store | wc -l`
-                  echo Press [a] generate ansible host inventory.
-                  echo Press [p] generate puppet host inventory.
-                  echo Press [c] generate chef host inventory.
-                  echo Press [n] clear file.
-                  echo Press [q] if the count matches to your Deployment and Ansible and/or Puppet and/or Chef inventory is created
-                  ;;
-          esac
-    fi
+                dropfile)
+                    clear
+                    echo "file droped"
+                    rm ~/pending_store
+                    touch ~/pending_store
+                    cat ~/pending_store | awk '{print $10}'
+                    echo ----------------
+                    echo Hosts in File: `grep -o -i "hostname:" ~/pending_store | wc -l`
+                    echo Press [a] generate ansible host inventory.
+                    echo Press [p] generate puppet host inventory.
+                    echo Press [c] generate chef host inventory.
+                    echo Press [n] clear file.
+                    echo Press [q] if the count matches to your Deployment and Ansible and/or Puppet and/or Chef inventory is created
+                    ;;
+            esac
+        fi
 
 
-  done
+    done
 
 }
 function donersa {
-echo remove ssh access
-echo "$(grep -v "`cat ~/.ssh/reverse_rsa.pub`" ~/.ssh/authorized_keys)" > ~/.ssh/authorized_keys1
-mv ~/.ssh/authorized_keys1 ~/.ssh/authorized_keys
-echo Deploy done... RSA Reverse Access Removed
+    echo remove ssh access
+    echo "$(grep -v "`cat ~/.ssh/reverse_rsa.pub`" ~/.ssh/authorized_keys)" > ~/.ssh/authorized_keys1
+    mv ~/.ssh/authorized_keys1 ~/.ssh/authorized_keys
+    echo Deploy done... RSA Reverse Access Removed
 }
 
 
@@ -161,7 +161,7 @@ while true; do
                     [-i|—-ip $(ip addr show $interface | grep global | grep inet6 | awk ‘{print $2}’)]
                     [-u|--user $(whoami)] [-k|-—key .ssh/id_rsa]
                     [-r|—-reversekey .ssh/reversekey_rsa]
-                    [-o|—-output deploy.img] input"
+            [-o|—-output deploy.img] input"
             exit 1
             ;;
         -i|--ip)
@@ -173,12 +173,12 @@ while true; do
             shift 2
             ;;
         -k|--key)
-        echo todo
+            echo todo
             key="$2"
             shift 2
             ;;
         -r|--reversekey)
-        echo todo
+            echo todo
             reversekey="$2"
             shift 2
             ;;
@@ -208,11 +208,11 @@ while true; do
 done
 
 if test "$#" -ne 1; then
-  echo "
+    echo "
 usage: arimg [-apc] [-i|--ip 2001:DB8::1]
           [-u|--user spinup] [-k|--key .ssh/id_rsa]
           [-r|--reversekey .ssh/reversekey_rsa]
-          [-o|--output deploy.img] input"
+    [-o|--output deploy.img] input"
     exit
 fi
 
@@ -246,10 +246,42 @@ if [ -f ~/spinup.img ]; then
     echo "Removed spinup.img"
     sudo rm -rf ~/spinup.img
 fi
+if [ -f $key ]; then
+    echo  "Found given RSA Publickey"
+
+else
+    echo "fole dosnt"
+    key=~/.ssh/id_rsa.pub
+    if [ -f $key ]; then
+        echo  "Found default RSA Publickey"
+
+    else
+        echo  "Cant find default RSA Publickey"
+        echo "generate default RSA Publickey"
+        ssh-keygen -f id_rsa -N ""
+        key=id_rsa.pub
+    fi
+fi
 
 
-if [ -f ~/.ssh/id_rsa.pub ]; then
-    echo  "Found RSA Publickey"
+if [ -f $reversekey ]; then
+    echo  "Found given RSA Privatekey"
+
+else
+    reversekey=~/.ssh/reverse_rsa
+    if [ -f $reversekey ]; then
+        echo  "Found default Reverse RSA Privatekey"
+
+    else
+        echo  "Cant find default Reverse RSA Privatekey"
+        echo "generate default Reverse RSA Privatekey"
+        ssh-keygen -f id_rsa -N ""
+        reversekey=id_rsa.pub
+    fi
+fi
+
+if [ -f $key ]; then
+
 
 else
     echo "Please run ssh-keygen"
@@ -392,7 +424,7 @@ else
 fi
 
 echo "Copy RSA to rootfs"
-sudo cp ~/.ssh/id_rsa.pub ~/mnt/id_rsa.pub
+sudo cp $key ~/mnt/id_rsa.pub
 
 echo "Create notifyer.service"
 cat <<'EOF' >> ~/notifyer.service
@@ -460,11 +492,11 @@ echo "Copy finish.bash to rootfs"
 sudo cp -f ~/finish.bash ~/mnt/finish.bash
 rm  ~/finish.bash
 if [[  $myip == n ]]; then
-myip=`ip addr | grep inet6 | grep global |  awk '{print $2}' | rev | cut -c4- | rev`
+    myip=`ip addr | grep inet6 | grep global |  awk '{print $2}' | rev | cut -c4- | rev`
 fi
 
 if [[  $myuser == n ]]; then
-myuser=`whoami`
+    myuser=`whoami`
 fi
 
 echo "Create notifyer"
@@ -508,16 +540,16 @@ systemctl enable notifyer.service
 EOT
 
 if [[  $shellaccess == y ]]; then
-echo "interactive shell! CTRL-d if done"
-bash -c "sudo chroot ~/mnt/"
+    echo "interactive shell! CTRL-d if done"
+    bash -c "sudo chroot ~/mnt/"
 fi
 
 if [[  $filedesign == 2 ]]; then
-echo "Detach loop"
-sudo losetup --detach-all
-sudo losetup -d `losetup -a | grep spinup.img | awk -F ":" '{print $1}'`
-echo "Unmount mnt/boot"
-sudo umount ~/mnt/boot
+    echo "Detach loop"
+    sudo losetup --detach-all
+    sudo losetup -d `losetup -a | grep spinup.img | awk -F ":" '{print $1}'`
+    echo "Unmount mnt/boot"
+    sudo umount ~/mnt/boot
 fi
 
 echo "Unmount image"
@@ -527,17 +559,17 @@ echo "Remove mountpoint"
 sudo rm -rf ~/mnt
 
 if [ -f ~/${@: -1}-spinup.img ]; then
-  if [ -f ~/${@: -1}-spinup.img.old ]; then
-    echo "Removed ${@: -1}-spinup.img.old"
-    sudo rm -rf ~/${@: -1}-spinup.img.old
-  fi
-mv ${@: -1}-spinup.img ${@: -1}-spinup.img.old
+    if [ -f ~/${@: -1}-spinup.img.old ]; then
+        echo "Removed ${@: -1}-spinup.img.old"
+        sudo rm -rf ~/${@: -1}-spinup.img.old
+    fi
+    mv ${@: -1}-spinup.img ${@: -1}-spinup.img.old
 fi
 if [[  $output == n ]]; then
-  mv ~/spinup.img ~/${@: -1}-spinup.img
-  echo -e "\e[32mFinished, ${@: -1}-spinup.img created\e[0m"
+    mv ~/spinup.img ~/${@: -1}-spinup.img
+    echo -e "\e[32mFinished, ${@: -1}-spinup.img created\e[0m"
 else
-  mv ~/spinup.img ~/$output-spinup.img
-  echo -e "\e[32mFinished, $output-spinup.img created\e[0m"
+    mv ~/spinup.img ~/$output-spinup.img
+    echo -e "\e[32mFinished, $output-spinup.img created\e[0m"
 fi
 echo "Run ./arimg -c"
