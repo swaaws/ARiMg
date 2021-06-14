@@ -7,23 +7,25 @@
 
 ## 🧐 What's ARiMg? 🧐
 
-AR' iM' g'  is a helper to modify SD Card Images according to the [Acorn RISC Machine (ARM)](https://en.wikipedia.org/wiki/ARM_architecture) Platform.
+AR' iM' g'  is a helper to modify SD Card Images according to the [Acorn RISC Machine (ARM)](https://en.wikipedia.org/wiki/ARM_architecture) Platform to find the deployed clients over Network.
 
 
 
 ## 📓 Preamble 📓
 In some case you need to setup many arm (raspberry like) hosts.
-You get an image from the Website and flash it with _**dd**_ to the sd card
+You get an image from a website and flash it with _**dd**_ to the sd card(or netboot...)
 you plug network, keyboard, mouse, display and power. All fine?
 Then you don't need this tool.
 But what is if you don't have a keyboard, mouse and display because of idleness?
--> This tool can Fits your _**Needs**_  
+-> This tool can _**fit**_
 
-You get an Provisioning user called: _**spinup**_  with the password _**spinup**_
+You get an provisioning user called: _**spinup**_  with the password _**spinup**_
 and if the Host is booted up it announce over ssh to your deploy host with usefull output.
+
+The client places a file called pending-[macaddress] in the host where the img was modifyed (or the given ip with -i/--ip).
 Your login looks like ssh spinup@[ip from _**cat ~/pending-\***_ ]
 
-Over ansible-playbooks all changes where reverted and a user called _**ansible**_ where created
+Over ansible-playbooks all changes where reverted and a user called _**ansible**_ will be created.
 
 
 ## ⚡️ For the fast ones ⚡️
@@ -61,10 +63,14 @@ _**Scroll down look at point 6. Additional Ansible/Puppet/Chef steps**_
 
 ## 📖 What's open 📖
 
-* automatic provision thought Puppet/Chef
+* automatic provision thought <s>Ansible</s>/Puppet/Chef
 * GPT support
 * Support ISO's with Preseed File \*-\*
 * expand fs
+* Set Workdirectory to /tmp
+* -k/--key
+* -r/--reversekey
+* Reorganise: chart. md # Depenency Relationship Diagram
 
 ## Operating system peculiarities
 * ArchLinuxARM dosnt have sudo. so ansible cant work at this point use --ask-become
@@ -159,10 +165,10 @@ DESCRIPTION
       The options are:
       -c    Catch hosts from network (interactive)
 
-      -d    Done Remove Reverse RSA key from deployment host
+      -d    Done Remove reverse RSA key from deployment host
 
       -i    Specify the ip where the deploy host connect over ssh. ATP: ipv6 only
-            (Default the host ipv6 address where arimg has build the image)
+            (Default: the host ipv6 address where arimg has build the image)
 
       -u    Specify the user where the deploy host connect over ssh.
             (Current user where arimg has build the image)
@@ -170,7 +176,7 @@ DESCRIPTION
       -k    Specify a file which used to provide an rsa key for user spinup.
             (The default is ~/.ssh/id_rsa). Note: Ansible use ~/.ssh/id_rsa
 
-      -r    Specify a file which used to allow connent to the deploy host.
+      -r    Specify a file which used to allow connect to the deploy host.
             (The default is ~/.ssh/reverse_rsa).
 
       -o    name the resulting image
@@ -179,6 +185,9 @@ DESCRIPTION
 
 
 ## 🏁 Getting Started 🏁
+
+_**0. Other**_
+You search for custom iso[^2] or img[^1] creation?
 
 _**1. Download the Repo**_
 ```bash
@@ -289,7 +298,8 @@ Throught:
 
 
 ```
-_**7. Other**_
-You search for custom iso/img creation:
-* CUBIC - Custom Ubuntu ISO Creator
-* Genimage - The Image Creation Tool
+
+
+
+[^1]: **Genimage** - The Image Creation Tool
+[^2]: **CUBIC** - Custom Ubuntu ISO Creatortted*.
