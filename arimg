@@ -149,7 +149,7 @@ while true; do
     case "$1" in
         -h|--help)
             echo "usage: arimg [-cd]
-                    [-i|—-ip $(ip addr show $interface | grep global | grep inet6 | awk '{print $2}')]
+                    [-i|—-ip $(ip addr show $interface | grep global | grep inet6 | awk '{print $2}'| rev | cut -c4- | rev)]
                     [-u|--user $(whoami)] [-k|-—key .ssh/id_rsa]
                     [-r|—-reversekey .ssh/reversekey_rsa]
             [-o|—-output deploy.img] input"
@@ -200,7 +200,7 @@ done
 
 if test "$#" -ne 1; then
     echo "
-usage: arimg [-apc] [-i|--ip $(ip addr show $interface | grep global | grep inet6 | awk '{print $2}')]
+usage: arimg [-apc] [-i|--ip $(ip addr show $interface | grep global | grep inet6 | awk '{print $2}'| rev | cut -c4- | rev)]
           [-u|--user $(whoami)] [-k|--key .ssh/id_rsa]
           [-r|--reversekey .ssh/reversekey_rsa]
     [-o|--output deploy.img] input"
