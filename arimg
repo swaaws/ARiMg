@@ -112,14 +112,12 @@ function catch {
 
 
     done
-
-}
-function donersa {
     echo remove ssh access
     echo "$(grep -v "`cat ~/.ssh/reverse_rsa.pub`" ~/.ssh/authorized_keys)" > ~/.ssh/authorized_keys1
     mv ~/.ssh/authorized_keys1 ~/.ssh/authorized_keys
     echo Deploy done... RSA Reverse Access Removed
 }
+
 
 
 set -o errexit -o pipefail -o noclobber -o nounset
@@ -130,8 +128,8 @@ if [[ ${PIPESTATUS[0]} -ne 4 ]]; then
     exit 1
 fi
 
-OPTIONS=i:u:k:r:o:dch
-LONGOPTS=ip:,user:,key:,reversekey:,output:done,catch,help
+OPTIONS=i:u:k:r:o:ch
+LONGOPTS=ip:,user:,key:,reversekey:,output:,catch,help
 
 ! PARSED=$(getopt --options=$OPTIONS --longoptions=$LONGOPTS --name "$0" -- "$@")
 if [[ ${PIPESTATUS[0]} -ne 0 ]]; then
@@ -148,7 +146,7 @@ interface=$(ip -o -6 route show to default | awk '{print $5}')
 while true; do
     case "$1" in
         -h|--help)
-            echo "usage: arimg [-cd]
+            echo "usage: arimg [-c]
                     [-i|—-ip $(ip addr show $interface | grep global | grep inet6 | awk '{print $2}'| rev | cut -c4- | rev)]
                     [-u|--user $(whoami)] [-k|-—key .ssh/id_rsa]
                     [-r|—-reversekey .ssh/reversekey_rsa]
@@ -182,11 +180,6 @@ while true; do
             shift
             exit 0
             ;;
-        -d|--done)
-            donersa
-            shift
-            exit 0
-            ;;
         --)
             shift
             break
@@ -200,7 +193,7 @@ done
 
 if test "$#" -ne 1; then
     echo "
-usage: arimg [-apc] [-i|--ip $(ip addr show $interface | grep global | grep inet6 | awk '{print $2}'| rev | cut -c4- | rev)]
+usage: arimg [-c] [-i|--ip $(ip addr show $interface | grep global | grep inet6 | awk '{print $2}'| rev | cut -c4- | rev)]
           [-u|--user $(whoami)] [-k|--key .ssh/id_rsa]
           [-r|--reversekey .ssh/reversekey_rsa]
     [-o|--output deploy] input"
@@ -560,4 +553,4 @@ else
     mv ~/spinup.img ~/$output-spinup.img
     echo -e "\e[32mFinished, $output-spinup.img created\e[0m"
 fi
-echo "Run ./arimg -c"
+echo "Run arimg -c"

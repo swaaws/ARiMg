@@ -4,16 +4,12 @@
 graph TD;
   ./arimg--->|option's|input
   ./arimg---->|-c|Catch;
-  ./arimg----->|-d|Done;
-
 
   Catch-->|a|MakeAnsibleInv;
   Catch-->|p|MakePuppetInv;
   Catch-->|c|MakeChefInv;
   Catch-->|n|WipeFile;
   Catch-->|q|Exit;
-
-
 
   option's-->|-i/--ip|AnounceHostIP
   option's--->|-u/--user|AnounceHostUser
@@ -39,10 +35,6 @@ sequenceDiagram
     end
     Deployment->>Deployment: ./arimg -c
     Note right of Deployment: Generate Hosts File, Ansible- <br/>Puppet- Chef- Inventory.
-
-    Deployment->>Deployment: ./arimg -d
-    Note right of Deployment: Remove Reverse RSA Key
-
 ```
 
 ## Depenency Relationship Diagram
@@ -101,6 +93,4 @@ erDiagram
       chroot }|..|{ mv : img-depen
       chroot }|..|{ mkdir : img-depen
       chroot }|..|{ systemctl : img-depen
-
-
 ```

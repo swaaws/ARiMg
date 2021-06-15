@@ -31,7 +31,7 @@ Over ansible-playbooks all changes where reverted and a user called _**ansible**
 ## ⚡️ For the fast ones ⚡️
 ```bash
 ./arimg -h
-usage: arimg [-cd] [-i|--ip 2001:DB8::1]
+usage: arimg [-c] [-i|--ip 2001:DB8::1]
              [-u|--user spinup] [-k|--key .ssh/id_rsa]
              [-r|--reversekey .ssh/reversekey_rsa] [-o|--output deploy.img] input
 
@@ -55,8 +55,6 @@ ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook -i ~/pending.ansible.yaml ~/git
 ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook -i ~/pending.ansible.yaml ~/github/ARiMg/ansible/03_finish.yml
 
 
-./arimg -d # Done
-Deploy done... RSA Reverse Access Removed
 ```
 
 _**Scroll down look at point 6. Additional Ansible/Puppet/Chef steps**_  
@@ -68,8 +66,6 @@ _**Scroll down look at point 6. Additional Ansible/Puppet/Chef steps**_
 * Support ISO's with Preseed File \*-\*
 * expand fs
 * Set Workdirectory to /tmp
-* -k/--key
-* -r/--reversekey
 * Reorganise: chart. md # Depenency Relationship Diagram
 
 ## Operating system peculiarities
@@ -154,7 +150,7 @@ NAME
       arimg - modify operating system images
 
 SYNOPSIS
-      arimg [-cd] [-i|--ip 2001:DB8::1]
+      arimg [-c] [-i|--ip 2001:DB8::1]
             [-u|--user spinup] [-k|--key .ssh/id_rsa]
             [-r|--reversekey .ssh/reversekey_rsa] [-o|--output deploy] input
 
@@ -164,8 +160,6 @@ DESCRIPTION
 
       The options are:
       -c    Catch hosts from network (interactive)
-
-      -d    Done Remove reverse RSA key from deployment host
 
       -i    Specify the ip where the deploy host connect over ssh. ATP: ipv6 only
             (Default: the host ipv6 address where arimg has build the image)
@@ -274,14 +268,6 @@ ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook -i ~/pending.ansible.yaml ~/git
 ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook -i ~/pending.ansible.yaml ~/github/ARiMg/ansible/03_finish.yml
 
 q
-ubuntu@raspberry:~$
-```
-
-_**5. Finish Deployment**_
-```bash
-# This Step is important because simple password -> ssh key to your deployment host
-ubuntu@raspberry:~$ ARiMg/arimg -d
-Deploy done... RSA Reverse Access Removed
 ubuntu@raspberry:~$
 ```
 
