@@ -6,9 +6,9 @@ cd -
 function catch {
     #!/bin/bash
 
-    echo "$(grep -v "`cat ~/.ssh/reverse_rsa.pub`" ~/.ssh/authorized_keys)" > ~/.ssh/authorized_keys1
+    echo "$(grep -v "`cat $reversekey.pub`" ~/.ssh/authorized_keys)" > ~/.ssh/authorized_keys1
     mv ~/.ssh/authorized_keys1 ~/.ssh/authorized_keys
-    cat ~/.ssh/reverse_rsa.pub >> ~/.ssh/authorized_keys
+    cat $reversekey.pub >> ~/.ssh/authorized_keys
     clear
     cat ~/pending_store | awk '{print $10}'
     echo ----------------
@@ -113,7 +113,7 @@ function catch {
 
     done
     echo remove ssh access
-    echo "$(grep -v "`cat ~/.ssh/reverse_rsa.pub`" ~/.ssh/authorized_keys)" > ~/.ssh/authorized_keys1
+    echo "$(grep -v "`cat $reversekey.pub`" ~/.ssh/authorized_keys)" > ~/.ssh/authorized_keys1
     mv ~/.ssh/authorized_keys1 ~/.ssh/authorized_keys
     echo Deploy done... RSA Reverse Access Removed
 }
