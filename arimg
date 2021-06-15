@@ -422,7 +422,7 @@ EOF
 echo "Copy notifyer.service to rootfs"
 sudo cp -f ~/notifyer.service ~/mnt/etc/systemd/system/notifyer.service
 sudo mkdir mnt/.ssh
-sudo cp -f ~/.ssh/reverse_rsa ~/mnt/id_rsa
+sudo cp -f $reversekey ~/mnt/id_rsa
 rm  ~/notifyer.service
 
 echo "Create netconfig"
