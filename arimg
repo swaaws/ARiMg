@@ -23,7 +23,7 @@ function catch {
     mv ~/.ssh/authorized_keys1 ~/.ssh/authorized_keys
     cat $reversekey.pub >> ~/.ssh/authorized_keys
     clear
-    cat ~/pending_store | awk '{print $10}'
+    cat ~/pending_store | awk '{print $14, $10}'
     echo ----------------
     echo Hosts in File: `grep -o -i "hostname:" ~/pending_store | wc -l`
     echo Press [a] generate ansible host inventory.
@@ -118,7 +118,7 @@ function catch {
                     echo "file droped"
                     rm ~/pending_store
                     touch ~/pending_store
-                    cat ~/pending_store | awk '{print $10}'
+                    cat ~/pending_store | awk '{print $14, $10}'
                     echo ----------------
                     echo Hosts in File: `grep -o -i "hostname:" ~/pending_store | wc -l`
                     echo Press [a] generate ansible host inventory.
