@@ -5,6 +5,8 @@ graph TD;
   ./arimg--->|option's|input
   ./arimg---->|-c|Catch;
 
+
+  Catch-->|h|MakeHostsFile;
   Catch-->|a|MakeAnsibleInv;
   Catch-->|p|MakePuppetInv;
   Catch-->|c|MakeChefInv;
