@@ -261,27 +261,6 @@ else
     fi
 fi
 
-if [ -f $key ]; then
-
-
-else
-    echo "Please run ssh-keygen"
-    exit 1
-    # echo Generate RSA;
-    # ssh-keygen -q -N "";
-fi
-
-if [ -f ~/.ssh/reverse_rsa.pub ]; then
-    echo  "Found Reverse RSA Publickey"
-else
-    echo "Generate remote sshkey"
-    ssh-keygen -f ~/.ssh/reverse_rsa  -N ""
-
-fi
-#echo "$(grep -v "`cat ~/.ssh/reverse_rsa.pub`" ~/.ssh/authorized_keys)" > ~/.ssh/authorized_keys1
-#mv ~/.ssh/authorized_keys1 ~/.ssh/authorized_keys
-#cat ~/.ssh/reverse_rsa.pub >> ~/.ssh/authorized_keys
-
 #sd_card-image
 if [[  $filedesign == 1 ]]; then
     case $compression in
