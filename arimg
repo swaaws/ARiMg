@@ -4,7 +4,20 @@ scriptroot=`pwd`
 cd -
 
 function catch {
-    #!/bin/bash
+
+
+    if [ -f $reversekey ]; then
+        echo  ""
+
+    else
+        reversekey=~/.ssh/reverse_rsa
+        if [ -f $reversekey ]; then
+            echo  ""
+
+        else
+            echo  "Pleas run ./armig dist.img"
+        fi
+    fi
 
     echo "$(grep -v "`cat $reversekey.pub`" ~/.ssh/authorized_keys)" > ~/.ssh/authorized_keys1
     mv ~/.ssh/authorized_keys1 ~/.ssh/authorized_keys
@@ -29,7 +42,7 @@ function catch {
             mv ~/pending_store.now ~/pending_store
             sed -i '/^$/d' ~/pending_store
             clear
-            cat ~/pending_store | awk '{print $10}'
+            cat ~/pending_store | awk '{print $14, $10}'
             echo ----------------
             echo Hosts in File: `grep -o -i "hostname:" ~/pending_store | wc -l`
             echo Press [a] generate ansible host inventory.
@@ -67,7 +80,10 @@ function catch {
 
                 ansible)
                     echo "Create ansible inventory"
-                    rm ~/pending.ansible.inv
+                    if [ -f ~/pending.ansible.inv ]; then
+                            rm ~/pending.ansible.inv
+
+                    fi
                     touch ~/pending.ansible.inv
 
                     echo
@@ -76,6 +92,10 @@ function catch {
                         echo "$p" | awk '{print $6}' | rev | cut -c4- | rev  >> ~/pending.ansible.inv
                         echo "" >> ~/pending.ansible.inv
                     done <~/pending_store
+                    if [ -f ~/pending.ansible.yaml ]; then
+                            rm ~/pending.ansible.yaml
+
+                    fi
                     ansible-inventory -i ~/pending.ansible.inv --list -y > ~/pending.ansible.yaml
                     rm ~/pending.ansible.inv
                     echo "pending.ansible.yaml Created"
@@ -227,19 +247,19 @@ if [ -f ~/spinup.img ]; then
     echo "Removed spinup.img"
     sudo rm -rf ~/spinup.img
 fi
-if [ -f $key ]; then
+if [ -f $key.pub ]; then
     echo  "Found given RSA Publickey"
 
 else
-    key=~/.ssh/id_rsa.pub
-    if [ -f $key ]; then
+    key=~/.ssh/id_rsa
+    if [ -f $key.pub ]; then
         echo  "Found default RSA Publickey"
 
     else
         echo  "Cant find default RSA Publickey"
         echo "generate default RSA Publickey"
         ssh-keygen -f id_rsa -N ""
-        key=id_rsa.pub
+        key=id_rsa
     fi
 fi
 
@@ -255,8 +275,8 @@ else
     else
         echo  "Cant find default Reverse RSA Privatekey"
         echo "generate default Reverse RSA Privatekey"
-        ssh-keygen -f id_rsa -N ""
-        reversekey=id_rsa.pub
+        ssh-keygen -f reverse_rsa -N ""
+        reversekey=reverse_rsa
     fi
 fi
 
@@ -383,7 +403,7 @@ else
 fi
 
 echo "Copy RSA to rootfs"
-sudo cp $key ~/mnt/id_rsa.pub
+sudo cp $key.pub ~/mnt/id_rsa.pub
 
 echo "Create notifyer.service"
 cat <<'EOF' >> ~/notifyer.service
