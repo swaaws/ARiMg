@@ -24,7 +24,7 @@ function catch {
     cat $reversekey.pub >> ~/.ssh/authorized_keys
     clear
     cat ~/pending_store | awk '{print $14, $10}'
-    echo "^----------------Errors"
+    echo "^------------------ Errors"
     echo Hosts in File: `grep -o -i "hostname:" ~/pending_store | wc -l`
     echo Press [a] generate ansible host inventory.
     echo Press [p] generate puppet host inventory.
@@ -43,7 +43,7 @@ function catch {
             sed -i '/^$/d' ~/pending_store
             clear
             cat ~/pending_store | awk '{print $14, $10}'
-            echo "^----------------Errors"
+            echo "^------------------ Errors"
             echo Hosts in File: `grep -o -i "hostname:" ~/pending_store | wc -l`
             echo Press [a] generate ansible host inventory.
             echo Press [p] generate puppet host inventory.
@@ -119,7 +119,7 @@ function catch {
                     rm ~/pending_store
                     touch ~/pending_store
                     cat ~/pending_store | awk '{print $14, $10}'
-                    echo "^----------------Errors"
+                    echo "^------------------ Errors"
                     echo Hosts in File: `grep -o -i "hostname:" ~/pending_store | wc -l`
                     echo Press [a] generate ansible host inventory.
                     echo Press [p] generate puppet host inventory.
