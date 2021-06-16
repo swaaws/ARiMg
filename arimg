@@ -141,7 +141,7 @@ myip=n
 myuser=n
 key=n
 reversekey=n
-output=-
+output=n
 interface=$(ip -o -6 route show to default | awk '{print $5}')
 while true; do
     case "$1" in
@@ -231,7 +231,6 @@ if [ -f $key ]; then
     echo  "Found given RSA Publickey"
 
 else
-    echo "fole dosnt"
     key=~/.ssh/id_rsa.pub
     if [ -f $key ]; then
         echo  "Found default RSA Publickey"
