@@ -81,7 +81,7 @@ function catch {
                 ansible)
                     echo "Create ansible inventory"
                     if [ -f ~/pending.ansible.inv ]; then
-                            rm ~/pending.ansible.inv
+                        rm ~/pending.ansible.inv
 
                     fi
                     touch ~/pending.ansible.inv
@@ -93,7 +93,7 @@ function catch {
                         echo "" >> ~/pending.ansible.inv
                     done <~/pending_store
                     if [ -f ~/pending.ansible.yaml ]; then
-                            rm ~/pending.ansible.yaml
+                        rm ~/pending.ansible.yaml
 
                     fi
                     ansible-inventory -i ~/pending.ansible.inv --list -y > ~/pending.ansible.yaml
