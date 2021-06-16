@@ -26,6 +26,7 @@ function catch {
     cat ~/pending_store | awk '{print $14, $10}'
     echo "^------------------ Errors"
     echo Hosts in File: `grep -o -i "hostname:" ~/pending_store | wc -l`
+    echo Press [h] generate hosts file.
     echo Press [a] generate ansible host inventory.
     echo Press [p] generate puppet host inventory.
     echo Press [c] generate chef host inventory.
@@ -45,6 +46,7 @@ function catch {
             cat ~/pending_store | awk '{print $14, $10}'
             echo "^------------------ Errors"
             echo Hosts in File: `grep -o -i "hostname:" ~/pending_store | wc -l`
+            echo Press [h] generate hosts file.
             echo Press [a] generate ansible host inventory.
             echo Press [p] generate puppet host inventory.
             echo Press [c] generate chef host inventory.
@@ -121,6 +123,7 @@ function catch {
                     cat ~/pending_store | awk '{print $14, $10}'
                     echo "^------------------ Errors"
                     echo Hosts in File: `grep -o -i "hostname:" ~/pending_store | wc -l`
+                    echo Press [h] generate hosts file.
                     echo Press [a] generate ansible host inventory.
                     echo Press [p] generate puppet host inventory.
                     echo Press [c] generate chef host inventory.
