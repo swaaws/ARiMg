@@ -22,8 +22,8 @@ But what is if you don't have a keyboard, mouse and display because of idleness?
 You get an provisioning user called: _**spinup**_  with the password _**spinup**_
 and if the Host is booted up it announce over ssh to your deploy host with usefull output.
 
-The client places a file called pending-[macaddress] in the host where the img was modifyed (or the given ip with -i/--ip).
-Your login looks like ssh spinup@[ip from _**cat ~/pending-\***_ ]
+The client places a file called pending-[macaddress] in the host home directory where the img was modifyed (or the given ip with -i/--ip).
+Your login looks like ssh spinup@[ip from _**~/pending-\***_ ]
 
 Over ansible-playbooks all changes where reverted and a user called _**ansible**_ will be created.
 
@@ -45,14 +45,14 @@ Hosts in File: 0
 Press [a] generate ansible host inventory.
 Press [h] generate hosts file.
 Press [n] clear file.
-Press [q] when the number of hosts is correct.
+Press [q] quit
 
 
 # Ansible steps
 ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook -i ~/pending.ansible.yaml ~/github/ARiMg/ansible/01_spinup.yml
 ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook -i ~/pending.ansible.yaml ~/github/ARiMg/ansible/02_apt_upgrade.yml
 ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook -i ~/pending.ansible.yaml ~/github/ARiMg/ansible/03_finish.yml
-
+ansible all -i pending.ansible.yaml --become -a "poweroff" -u ansible
 
 ```
 
@@ -65,14 +65,15 @@ _**Scroll down look at point 6. Additional Ansible steps**_
 * Support ISO's with Preseed File \*-\*
 * expand fs
 * Set Workdirectory to /tmp
+* (dream) use multicast for anounce
 * Reorganise: chart. md # Depenency Relationship Diagram
 
 ## Operating system peculiarities
-* ArchLinuxARM dosnt have sudo. so ansible cant work at this point use --ask-become
+* ArchLinuxARM dosnt have sudo. so ansible cant work at this point. use --ask-become
 
 ## Download Structure
 
-In most cases the Operating System comes as a Compressed File with an Image(img)
+In most cases the Operating System comes as a Compressed File as an Image(img)
 or as a Plain Root Directory(rootfs):
 
 - Plain Root Directory in ... (Your Flavour Compression Algorithm)
@@ -149,7 +150,7 @@ NAME
       arimg - modify operating system images
 
 SYNOPSIS
-      arimg [-c] [-i|--ip 2001:DB8::1]
+      arimg [-c] | [-i|--ip 2001:DB8::1]
             [-u|--user spinup] [-k|--key .ssh/id_rsa]
             [-r|--reversekey .ssh/reversekey_rsa] [-o|--output deploy] input
 
@@ -173,7 +174,7 @@ DESCRIPTION
             (The default is ~/.ssh/reverse_rsa).
 
       -o    name the resulting image
-            (default [imputname]-deploy.img)
+            (default [imputname]-spinup.img)
 ```
 
 
@@ -259,7 +260,7 @@ Hosts in File: 0
 Press [a] generate ansible host inventory.
 Press [h] generate hosts file.
 Press [n] clear file.
-Press [q] if the count matches to your Deployment and inventory is created [a]
+Press [q] quit
 a
 ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook -i ~/pending.ansible.yaml ~/github/ARiMg/ansible/01_spinup.yml
 ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook -i ~/pending.ansible.yaml ~/github/ARiMg/ansible/02_apt_upgrade.yml

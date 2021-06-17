@@ -29,7 +29,7 @@ function catch {
     echo Press [h] generate hosts file.
     echo Press [a] generate ansible host inventory.
     echo Press [n] clear file.
-    echo Press [q] if the count matches to your Deployment and hosts file/Ansible inventory is created
+    echo Press [q] quit
 
     loop=true
     while $loop; do
@@ -47,7 +47,7 @@ function catch {
             echo Press [h] generate hosts file.
             echo Press [a] generate ansible host inventory.
             echo Press [n] clear file.
-            echo Press [q] if the count matches to your Deployment and hosts file/Ansible  inventory is created
+            echo Press [q] quit
             rm ~/pending-*
             rm ~/pending_store.tmp
         fi
@@ -112,7 +112,7 @@ function catch {
                     echo Press [h] generate hosts file.
                     echo Press [a] generate ansible host inventory.
                     echo Press [n] clear file.
-                    echo Press [q] if the count matches to your Deployment and hosts file/Ansible inventory is created
+                    echo Press [q] quit
                     ;;
             esac
         fi
