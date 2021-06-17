@@ -43,8 +43,7 @@ usage: arimg [-c] [-i|--ip 2001:DB8::1]
 ----------------
 Hosts in File: 0
 Press [a] generate ansible host inventory.
-Press [p] generate puppet host inventory.
-Press [c] generate chef host inventory.
+Press [h] generate hosts file.
 Press [n] clear file.
 Press [q] when the number of hosts is correct.
 
@@ -57,11 +56,11 @@ ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook -i ~/pending.ansible.yaml ~/git
 
 ```
 
-_**Scroll down look at point 6. Additional Ansible/Puppet/Chef steps**_  
+_**Scroll down look at point 6. Additional Ansible steps**_  
 
 ## 📖 What's open 📖
 
-* automatic provision thought <s>Ansible</s>/Puppet/Chef
+* automatic provision thought <s>Ansible</s>
 * GPT support
 * Support ISO's with Preseed File \*-\*
 * expand fs
@@ -258,10 +257,9 @@ ubuntu@raspberry:~$ ARiMg/arimg -c # Catch hosts from network
 ----------------
 Hosts in File: 0
 Press [a] generate ansible host inventory.
-Press [p] generate puppet host inventory.
-Press [c] generate chef host inventory.
+Press [h] generate hosts file.
 Press [n] clear file.
-Press [q] if the count matches to your Deployment and inventory is created [apc]
+Press [q] if the count matches to your Deployment and inventory is created [a]
 a
 ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook -i ~/pending.ansible.yaml ~/github/ARiMg/ansible/01_spinup.yml
 ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook -i ~/pending.ansible.yaml ~/github/ARiMg/ansible/02_apt_upgrade.yml
@@ -271,7 +269,7 @@ q
 ubuntu@raspberry:~$
 ```
 
-_**6. Additional Ansible/Puppet/Chef steps**_
+_**6. Additional Ansible steps**_
 ```text
 Throught:
 * Disable Passwordauth - ansible/01_spinup.yml

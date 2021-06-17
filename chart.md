@@ -8,8 +8,6 @@ graph TD;
 
   Catch-->|h|MakeHostsFile;
   Catch-->|a|MakeAnsibleInv;
-  Catch-->|p|MakePuppetInv;
-  Catch-->|c|MakeChefInv;
   Catch-->|n|WipeFile;
   Catch-->|q|Exit;
 
@@ -36,7 +34,7 @@ sequenceDiagram
         Network->>Deployment: if ./arimg <br/>--ip [same as Deployment]
     end
     Deployment->>Deployment: ./arimg -c
-    Note right of Deployment: Generate Hosts File, Ansible- <br/>Puppet- Chef- Inventory.
+    Note right of Deployment: Generate Hosts File, Ansible Inventory.
 ```
 
 ## Depenency Relationship Diagram

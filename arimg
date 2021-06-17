@@ -28,10 +28,8 @@ function catch {
     echo Hosts in File: `grep -o -i "hostname:" ~/pending_store | wc -l`
     echo Press [h] generate hosts file.
     echo Press [a] generate ansible host inventory.
-    echo Press [p] generate puppet host inventory.
-    echo Press [c] generate chef host inventory.
     echo Press [n] clear file.
-    echo Press [q] if the count matches to your Deployment and Ansible and/or Puppet and/or Chef inventory is created
+    echo Press [q] if the count matches to your Deployment and hosts file/Ansible inventory is created
 
     loop=true
     while $loop; do
@@ -48,10 +46,8 @@ function catch {
             echo Hosts in File: `grep -o -i "hostname:" ~/pending_store | wc -l`
             echo Press [h] generate hosts file.
             echo Press [a] generate ansible host inventory.
-            echo Press [p] generate puppet host inventory.
-            echo Press [c] generate chef host inventory.
             echo Press [n] clear file.
-            echo Press [q] if the count matches to your Deployment and Ansible and/or Puppet and/or Chef inventory is created
+            echo Press [q] if the count matches to your Deployment and hosts file/Ansible  inventory is created
             rm ~/pending-*
             rm ~/pending_store.tmp
         fi
@@ -61,8 +57,6 @@ function catch {
             done
             case $str in
                 a) trapKey=ansible    ;;
-                p) trapKey=puppet  ;;
-                c) trapKey=chef ;;
                 h) trapKey=hosts ;;
                 n) trapKey=dropfile ;;
                 q | $'\E') loop=false  ;;
@@ -107,15 +101,6 @@ function catch {
                     echo "ansible all -i pending.ansible.yaml --become -a "poweroff" -u ansible"
                     ;;
 
-                puppet)
-                    echo ""
-
-                    ;;
-
-                chef)
-                    echo ""
-                    ;;
-
                 dropfile)
                     clear
                     echo "file droped"
@@ -126,10 +111,8 @@ function catch {
                     echo Hosts in File: `grep -o -i "hostname:" ~/pending_store | wc -l`
                     echo Press [h] generate hosts file.
                     echo Press [a] generate ansible host inventory.
-                    echo Press [p] generate puppet host inventory.
-                    echo Press [c] generate chef host inventory.
                     echo Press [n] clear file.
-                    echo Press [q] if the count matches to your Deployment and Ansible and/or Puppet and/or Chef inventory is created
+                    echo Press [q] if the count matches to your Deployment and hosts file/Ansible inventory is created
                     ;;
             esac
         fi
