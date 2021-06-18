@@ -23,7 +23,7 @@ You get an provisioning user called: _**spinup**_  with the password _**spinup**
 and if the Host is booted up it announce over ssh to your deploy host with usefull output.
 
 The client places a file called pending-[macaddress] in the host home directory where the img was modifyed (or the given ip with -i/--ip).
-Your login looks like ssh spinup@[ip from _**~/pending-\***_ ]
+Your login looks like ssh spinup@[ip from _**~/pending-***_ ]
 
 Over ansible-playbooks all changes where reverted and a user called _**ansible**_ will be created.
 
