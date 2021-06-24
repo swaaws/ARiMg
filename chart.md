@@ -1,5 +1,6 @@
-# No SuPpORt on Github, use Gitlab
+# No SuPpORt on Github, use [Gitlab](https://gitlab.com/swaaws/ARiMg/-/blob/main/chart.md)
 ## arimg options
+
 ```mermaid
 graph TD;
   ./arimg--->|option's|input
