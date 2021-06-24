@@ -1,0 +1,72 @@
+- hosts: all
+  remote_user: spinup
+
+  tasks:
+
+  - name: Disable root login over SSH
+    become: true
+    lineinfile: dest=/etc/ssh/sshd_config regexp="^PermitRootLogin" line="PermitRootLogin no" state=present
+
+  - name: Disable password login
+    become: true
+    lineinfile: dest=/etc/ssh/sshd_config regexp="^PasswordAuthentication" line="PasswordAuthentication no" state=present
+
+  - name: Gruppe "ansible" anlegen
+    become: true
+    group:
+      name: ansible
+      gid: 1100
+      state: present
+
+  - name: Benutzer "ansible" anlegen
+    become: true
+    user:
+      name: ansible
+      createhome: yes
+      uid: 1100
+      group: ansible
+      state: present
+
+  - name: Sudoers-Eintrag für Benutzer "ansible" anlegen
+    become: true
+    copy:
+      dest: /etc/sudoers.d/ansible
+      content: 'ansible ALL= NOPASSWD: ALL'
+      owner: root
+      group: root
+      mode: 0500
+
+  - name: SSH-Key für Benutzer "ansible" kopieren
+    become: true
+    authorized_key:
+      user: ansible
+      key: "{{ lookup('file', '~/.ssh/id_rsa.pub') }}"
+      key_options: 'no-port-forwarding'
+
+  - name: 'Ubuntu: Benutzer "ubuntu" entfernen'
+    become: true
+    user:
+      name: ubuntu
+      state: absent
+      remove: yes
+
+  - name: 'Ubuntu: Gruppe "ubuntu" entfernen'
+    become: true
+    group:
+      name: ubuntu
+      state: absent
+
+  - name: Run Finish.bash
+    become: true
+    command: /finish.bash
+
+  - name: Remove file
+    become: true
+    file:
+      path: /finish.bash
+      state: absent
+
+  - name: Reboot host
+    shell: sleep 2 && /sbin/shutdown -r now "Ansible reboot"
+    async: 1
+    poll: 0

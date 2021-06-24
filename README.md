@@ -7,45 +7,73 @@
 
 ## 🧐 What's ARiMg? 🧐
 
-AR' iM' g'  is a helper that includes everything* needed to
-modify SD Card Images according to the [Acorn RISC Machine (ARM)](https://en.wikipedia.org/wiki/ARM_architecture) Platform.
-*dependencies not included
+AR' iM' g'  is a helper to modify SD Card Images according to the [Acorn RISC Machine (ARM)](https://en.wikipedia.org/wiki/ARM_architecture) Platform to find the deployed clients over Network.
+
 
 
 ## 📓 Preamble 📓
 In some case you need to setup many arm (raspberry like) hosts.
-You get an image from the Website and flash it with _**dd**_ to the sd card
+You get an image from a website and flash it with _**dd**_ to the sd card(or netboot...)
 you plug network, keyboard, mouse, display and power. All fine?
 Then you don't need this tool.
 But what is if you don't have a keyboard, mouse and display because of idleness?
--> This tool can Fits your _**Needs**_  
+-> This tool can _**fit**_
 
-You get an Provisioning user called: _**spinup**_  with the password _**spinup**_
+You get an provisioning user called: _**spinup**_  with the password _**spinup**_
 and if the Host is booted up it announce over ssh to your deploy host with usefull output.
-Your login looks like ssh spinup@[ip from ./deploy_cache.bash]
+
+The client places a file called pending-[macaddress] in the host home directory where the img was modifyed (or the given ip with -i/--ip).
+Your login looks like ssh spinup@[ip from _**~/pending-***_ ]
+
+Over ansible-playbooks all changes where reverted and a user called _**ansible**_ will be created.
 
 
 ## ⚡️ For the fast ones ⚡️
 ```bash
-./deploy_start.bash ArchLinuxARM-rpi-2-latest.tar.gz
-# know the layout of your file: 1(Partition table) , 2(Compressed root)
-# 2 (ArchLinuxArm example)
+./arimg -h
+usage: arimg [-c] [-i|--ip 2001:DB8::1]
+             [-u|--user spinup] [-k|--key .ssh/id_rsa]
+             [-r|--reversekey .ssh/reversekey_rsa] [-o|--output deploy.img] input
+
+./arimg ArchLinuxARM-rpi-2-latest.tar.gz
+# know the layout of your file: 1(Partition table) , 2(Compressed root): 2 (ArchLinuxArm example)
 # want shell access befor finish: n/y
-./deploy_cache.bash
-./deploy_done.bash      <- !!!!Important!!!!
+
+./arimg -c # Catch hosts from network
+----------------
+Hosts in File: 0
+Press [a] generate ansible host inventory.
+Press [h] generate hosts file.
+Press [n] clear file.
+Press [q] quit
+
+
+# Ansible steps
+ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook -i ~/pending.ansible.yaml ~/github/ARiMg/ansible/01_spinup.yml
+ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook -i ~/pending.ansible.yaml ~/github/ARiMg/ansible/02_apt_upgrade.yml
+ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook -i ~/pending.ansible.yaml ~/github/ARiMg/ansible/03_finish.yml
+ansible all -i pending.ansible.yaml --become -a "poweroff" -u ansible
+
 ```
-_**Scroll down look at point 6. Additional Ansible/Puppet/Chef steps**_  
+
+_**Scroll down look at point 6. Additional Ansible steps**_  
 
 ## 📖 What's open 📖
-* permit password login
-* automatic provision thought Ansible/Puppet/Chef
+
+* automatic provision thought <s>Ansible</s>
 * GPT support
 * Support ISO's with Preseed File \*-\*
-* one_file_fits_all: ./arimg {-s --start -i --ip -u --user -k --key -r --reversekey} {-c --cache -a --ansible -p --puppet -c -chef} {-d --done}
+* expand fs
+* Set Workdirectory to /tmp
+* (dream) use multicast for anounce
+* Reorganise: chart. md # Depenency Relationship Diagram
+
+## Operating system peculiarities
+* ArchLinuxARM dosnt have sudo. so ansible cant work at this point. use --ask-become
 
 ## Download Structure
 
-In most cases the Operating System comes as a Compressed File with an Image(img)
+In most cases the Operating System comes as a Compressed File as an Image(img)
 or as a Plain Root Directory(rootfs):
 
 - Plain Root Directory in ... (Your Flavour Compression Algorithm)
@@ -87,8 +115,9 @@ _**SD Card Img**_
 ```
 
 _**Plain Root Directory**_
-.rootfs.(Flavour Compression)
+
 ```text
+someDistro.rootfs
 /
  | bin
  | dev
@@ -115,7 +144,44 @@ _**ArchLinuxARM**_
 
 
 
+## Manpage
+```manpage
+NAME
+      arimg - modify operating system images
+
+SYNOPSIS
+      arimg [-c] | [-i|--ip 2001:DB8::1]
+            [-u|--user spinup] [-k|--key .ssh/id_rsa]
+            [-r|--reversekey .ssh/reversekey_rsa] [-o|--output deploy] input
+
+DESCRIPTION
+      arimg is a helper to modify SD Card Images
+            according to the ARM Platform.
+
+      The options are:
+      -c    Catch hosts from network (interactive)
+
+      -i    Specify the ip where the deploy host connect over ssh. ATP: ipv6 only
+            (Default: the host ipv6 address where arimg has build the image)
+
+      -u    Specify the user where the deploy host connect over ssh.
+            (Current user where arimg has build the image)
+
+      -k    Specify a file which used to provide an rsa key for user spinup.
+            (The default is ~/.ssh/id_rsa). Note: Ansible use ~/.ssh/id_rsa
+
+      -r    Specify a file which used to allow connect to the deploy host.
+            (The default is ~/.ssh/reverse_rsa).
+
+      -o    name the resulting image
+            (default [imputname]-spinup.img)
+```
+
+
 ## 🏁 Getting Started 🏁
+
+_**0. Other**_
+You search for custom iso[^2] or img[^1] creation?
 
 _**1. Download the Repo**_
 ```bash
@@ -131,7 +197,7 @@ wget https://cdimage.ubuntu.com/releases/21.04/release/ubuntu-21.04-preinstalled
 
 _**3. Start Deployment**_
 ```bash
-ubuntu@raspberry:~$ ./deploy_start.bash ubuntu-21.04-preinstalled-server-arm64+raspi.img.xz
+ubuntu@raspberry:~$ ARiMg/arimg ubuntu-21.04-preinstalled-server-arm64+raspi.img.xz
 Chosse Filedesign: [1] - sd_card-image, [2] - plain_rootfs: 1
 want shell access to img? [y] - yes, [n] - no: y
 get file info
@@ -188,35 +254,37 @@ Finished, ubuntu-21.04-preinstalled-server-arm64+raspi.img.xz-spinup.img created
 ```
 _**4. Cache Hosts**_
 ```bash
-# Username: spinup
-# Password: spinup
-ubuntu@raspberry:~$ ./deploy_cache.bash
-Hosts in File: 3
-hostname: pending-setup gateway: 2001:DB8::/32 global6: 2001:DB8::1/32 link-local: fe80:DB8::/32 mac_addr: ff:ff:ff:ff:ff:ff status: running failed: 0 units
-hostname: pending-setup gateway: 2001:DB8::/32 global6: 2001:DB8::2/32 link-local: fe80:DB8::/32 mac_addr: ff:ff:ff:ff:ff:ff status: running failed: 0 units
-hostname: pending-setup gateway: 2001:DB8::/32 global6: 2001:DB8::3/32 link-local: fe80:DB8::/32 mac_addr: ff:ff:ff:ff:ff:ff status: running failed: 0 units
-...
+ubuntu@raspberry:~$ ARiMg/arimg -c # Catch hosts from network
+----------------
+Hosts in File: 0
+Press [a] generate ansible host inventory.
+Press [h] generate hosts file.
+Press [n] clear file.
+Press [q] quit
+a
+ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook -i ~/pending.ansible.yaml ~/github/ARiMg/ansible/01_spinup.yml
+ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook -i ~/pending.ansible.yaml ~/github/ARiMg/ansible/02_apt_upgrade.yml
+ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook -i ~/pending.ansible.yaml ~/github/ARiMg/ansible/03_finish.yml
+
+q
+ubuntu@raspberry:~$
 ```
 
-_**5. Finish Deployment**_
-```bash
-# This Step is important because simple password -> ssh key to your deployment host
-ubuntu@raspberry:~$ ./deploy_done.bash
-
-```
-
-_**6. Additional Ansible/Puppet/Chef steps**_
+_**6. Additional Ansible steps**_
 ```text
 Throught:
-* Disable Passwordauth
-* Run finish.bash on nodes
-* Add Ansible management User
-* Remove spinup User
-* Disable Root Login
+* Disable Passwordauth - ansible/01_spinup.yml
+* Disable Root Login - ansible/01_spinup.yml
+* Add Ansible management User - ansible/01_spinup.yml
+* Remove spinup User - ansible/03_finish.yml
+* Run finish.bash on nodes - ansible/03_finish.yml
 * Change Password
 * Some OS'es ships default user keep an eye on it
-* expand fs
+
 
 ```
-_**7. Other**_
-You search for custom iso modification: Custom Ubuntu ISO Creator
+
+
+
+[^1]: **Genimage** - The Image Creation Tool
+[^2]: **CUBIC** - Custom Ubuntu ISO Creatortted*.

@@ -1,0 +1,23 @@
+---
+- hosts: all
+  remote_user: ansible
+  tasks:
+    - name: Wait for automatic system updates
+      shell: while sudo fuser /var/lib/dpkg/lock >/dev/null 2>&1; do sleep 1; done;
+    - name: apt-get update && apt-get upgrade
+      become: true
+      apt:
+        upgrade: "yes"
+        update_cache: "yes"
+        cache_valid_time: 0
+    - name: Reboot host
+      become: true
+      shell: sleep 2 && /sbin/shutdown -r now "Ansible reboot"
+      async: 1
+      poll: 0
+    - name: Wait for host to come back up
+      become: false
+      wait_for_connection:
+        delay: 15
+        sleep: 2
+        timeout: 120
