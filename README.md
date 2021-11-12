@@ -191,7 +191,7 @@ git clone https://github.com/swaaws/ARiMg.git
 _**2. Download a Operating System**_
 ```bash
 #Notice: Needs the Same Architecture as your Host
-#Workflow:  Run This Repo on an Raspberry and scp the Final img (or dd the img to a second sd card)
+#Workflow:  Run This Repo on an Raspberry and scp the Final img (or dd the resulting img to a second sd card)
 wget https://cdimage.ubuntu.com/releases/21.04/release/ubuntu-21.04-preinstalled-server-arm64+raspi.img.xz
 ```
 
